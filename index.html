@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScentIQ — Asesor Personal de Perfumes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f13;
+    --bg2: #1a1a24;
+    --bg3: #222230;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0edf8;
+    --text2: #a09ab8;
+    --text3: #6b647d;
+    --purple: #8B5CF6;
+    --purple2: #c4b5fd;
+    --purple3: #1e1535;
+    --radius: 12px;
+    --radius2: 20px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #2d1b69, #4c1d95);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand-name { font-size: 18px; font-weight: 600; letter-spacing: -0.4px; }
+  .brand-name span { color: var(--purple); }
+  .brand-tag { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .phase-badge {
+    font-size: 11px; padding: 4px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    color: var(--text2);
+    background: var(--bg2);
+  }
+  .phase-badge span { color: var(--purple2); font-weight: 500; }
+
+  /* PROFILE BAR */
+  .profile-bar {
+    margin: 0.75rem 1.5rem;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: none;
+  }
+  .profile-label {
+    font-size: 10px; color: var(--text3);
+    letter-spacing: 0.08em; margin-bottom: 7px;
+  }
+  .profile-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ptag {
+    font-size: 11px; padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--purple3);
+    color: var(--purple2);
+    border: 0.5px solid rgba(139,92,246,0.3);
+  }
+
+  /* CHAT */
+  .chat-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .msg { display: flex; gap: 9px; align-items: flex-start; animation: fadeUp 0.25s ease; }
+  .msg.user { flex-direction: row-reverse; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+  .av {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; flex-shrink: 0;
+  }
+  .av.bot { background: linear-gradient(135deg, #2d1b69, #4c1d95); color: var(--purple2); font-size: 14px; }
+  .av.user { background: var(--bg3); color: var(--text2); border: 0.5px solid var(--border2); font-size: 11px; }
+
+  .bub {
+    max-width: 82%; padding: 10px 14px;
+    border-radius: var(--radius2); font-size: 14px; line-height: 1.65;
+  }
+  .bub.bot {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-top-left-radius: 4px; color: var(--text);
+  }
+  .bub.user {
+    background: linear-gradient(135deg, #2d1b69, #3b1fa8);
+    color: #e2d9f3; border-top-right-radius: 4px;
+  }
+
+  /* REC CARDS */
+  .rec-block { margin-top: 10px; border-top: 0.5px solid var(--border); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .rcard {
+    background: var(--bg);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+  }
+  .rcard:hover { border-color: rgba(139,92,246,0.4); }
+  .rname { font-weight: 600; font-size: 13px; color: var(--text); }
+  .rhouse { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .rdetail { font-size: 11px; color: var(--text3); margin-top: 4px; line-height: 1.5; }
+  .remocion { font-size: 11px; color: var(--purple2); margin-top: 3px; font-style: italic; }
+  .rmatch { font-size: 13px; color: var(--purple); font-weight: 700; white-space: nowrap; padding-top: 2px; }
+
+  /* TYPING */
+  .typing-dots { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: blink 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; } .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,80%,100%{opacity:.25} 40%{opacity:1} }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 2px; background: var(--bg3);
+    margin: 0 1.5rem 0;
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple2));
+    border-radius: 2px; transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* QUICK PICKS */
+  .quick-area { padding: 0.5rem 1.5rem; }
+  .quick-label { font-size: 10px; color: var(--text3); letter-spacing: 0.07em; margin-bottom: 8px; }
+  .quick-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .qbtn {
+    font-size: 12px; padding: 7px 14px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: var(--bg2); color: var(--text2);
+    cursor: pointer; transition: all .15s;
+  }
+  .qbtn:hover { border-color: var(--purple); color: var(--purple2); background: var(--purple3); }
+
+  /* INPUT */
+  .input-area {
+    padding: 0.75rem 1.5rem 1.25rem;
+    border-top: 0.5px solid var(--border);
+    background: var(--bg);
+  }
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+  #inp {
+    flex: 1; padding: 11px 15px;
+    font-size: 14px; border-radius: var(--radius2);
+    border: 0.5px solid var(--border2);
+    background: var(--bg2); color: var(--text);
+    resize: none; font-family: inherit;
+    line-height: 1.5; height: 44px; max-height: 120px; overflow: hidden;
+    transition: border-color .2s;
+  }
+  #inp::placeholder { color: var(--text3); }
+  #inp:focus { outline: none; border-color: var(--purple); }
+  .sbtn {
+    width: 44px; height: 44px;
+    border-radius: 50%; background: linear-gradient(135deg, #2d1b69, #4c1d95);
+    border: none; cursor: pointer;
+    color: var(--purple2); font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: opacity .15s, transform .1s;
+  }
+  .sbtn:hover { opacity: .88; transform: scale(1.05); }
+  .sbtn:disabled { opacity: .35; cursor: default; transform: none; }
+  .hint { font-size: 11px; color: var(--text3); margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+  .hint-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--purple3); border: 1px solid var(--purple); }
+
+  /* SCROLLBAR */
+  .chat-wrap::-webkit-scrollbar { width: 4px; }
+  .chat-wrap::-webkit-scrollbar-track { background: transparent; }
+  .chat-wrap::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .header, .chat-wrap, .quick-area, .input-area, .profile-bar, .progress-bar { padding-left: 1rem; padding-right: 1rem; }
+    .profile-bar { margin-left: 1rem; margin-right: 1rem; }
+    .progress-bar { margin-left: 1rem; margin-right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">🧪</div>
+    <div>
+      <div class="brand-name">Scent<span>IQ</span></div>
+      <div class="brand-tag">Asesor personal de perfumes</div>
+    </div>
+  </div>
+  <div class="phase-badge">Fase: <span id="phase-label">Inicio</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div id="profile-bar" class="profile-bar">
+  <div class="profile-label">TU PERFIL OLFATIVO</div>
+  <div class="profile-tags" id="ptags"></div>
+</div>
+
+<div class="chat-wrap" id="chat"></div>
+
+<div class="quick-area" id="quick-area">
+  <div class="quick-label">ACCESOS RÁPIDOS</div>
+  <div class="quick-row">
+    <button class="qbtn" onclick="sq('Quiero empezar en la perfumería desde cero')">Empezar desde cero</button>
+    <button class="qbtn" onclick="sq('Tengo una cita romántica esta noche')">Cita romántica</button>
+    <button class="qbtn" onclick="sq('Necesito un perfume para la oficina')">Para la oficina</button>
+    <button class="qbtn" onclick="sq('Busco un regalo de perfume con 100 USD')">Para regalar</button>
+    <button class="qbtn" onclick="sq('Quiero algo fresco para el gimnasio y fines de semana')">Gym y casual</button>
+  </div>
+</div>
+
+<div class="input-area">
+  <div class="input-row">
+    <textarea id="inp" placeholder="Cuéntame qué buscas o cómo te sientes hoy..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
+    <button class="sbtn" id="sbtn" onclick="send()" aria-label="Enviar">➤</button>
+  </div>
+  <div class="hint"><div class="hint-dot"></div> Próximamente: análisis por foto de outfit · alertas de precio · perfil acumulativo</div>
+</div>
+
+<script>
+const SYSTEM = `Eres ScentIQ, el mejor asesor de perfumería del mundo. Combinas:
+- Conocimiento técnico de maestro perfumista
+- Psicología del olfato y memoria emocional (neurociencia)
+- Psicología de ventas y entendimiento profundo del cliente latinoamericano
+
+═══ CONOCIMIENTO TÉCNICO ═══
+Familias olfativas: fougère, oriental, chypre, floral, fresco/cítrico, amaderado, gourmand, cuero, acuático, especiado
+Pirámides: notas de salida (top) → corazón → fondo
+Proyección: sillage bajo / medio / alto / bestial
+Duración: 2-4h / 4-8h / 8h+ 
+Estacionalidad: orientales/amaderados para frío; frescos/acuáticos para calor
+
+MARCAS LUJO: Creed, Parfums de Marly, MFK (Maison Francis Kurkdjian), Dior, Chanel, Tom Ford, Xerjoff, Nishane, Byredo, Initio, Memo Paris
+MARCAS NICHO MID: Penhaligon's, Montale, Fragrance du Bois, Zimaya
+MARCAS ACCESIBLES LATAM: Armaf, Lattafa, Afnan, Rasasi, Al Haramain, Abraaj
+VENDORS COLOMBIA: Disfragancias, Valmara, MaferPerfumes, Aromas & Perfumes
+EQUIVALENCIAS CLAVE: Armaf Club de Nuit Intense ≈ Creed Aventus | Lattafa Asad ≈ Dior Sauvage Elixir | Lattafa Khamrah ≈ Initio Absolute Aphrodisiac | Afnan 9PM ≈ Paco Rabanne 1 Million
+
+CLIMA COLOMBIA:
+- Bogotá (2600m, 7-18°C): orientales, amaderados, especiados proyectan increíble. Evitar frescos muy ligeros.
+- Medellín (primavera eterna, 18-28°C): versátil, funciona todo
+- Cali/Costa (calor, 28-35°C): frescos, acuáticos, cítricos. Orientales pesados se vuelven sofocantes.
+
+═══ METODOLOGÍA DE 2 FASES ═══
+
+FASE 1 — PERFIL BÁSICO (si no tienes esta info, pregunta):
+- Género
+- Ciudad/clima
+- Ocasiones principales
+- Estilo personal
+- Presupuesto
+
+FASE 2 — ADN EMOCIONAL (el diferenciador, siempre pregunta esto):
+- ¿Qué olores de tu infancia o vida recuerdas con cariño? (tierra mojada, vainilla, jabón, madera, flores, frutas, etc.)
+- ¿Hay algún olor que asocies con alguien importante o un momento especial?
+- ¿Cómo quieres que te recuerden cuando salgas de un lugar?
+- ¿Buscas un perfume que evoque algo del pasado o que cree una identidad completamente nueva?
+
+IMPORTANTE: La neurociencia confirma que el olfato conecta directamente con la amígdala y el hipocampo. Los perfumes que resuenan con memorias positivas generan una respuesta emocional 10x más fuerte. Usa esto para recomendar con precisión emocional, no solo técnica.
+
+═══ FORMATO DE RECOMENDACIÓN ═══
+Cuando hagas recomendaciones formales usa EXACTAMENTE este formato:
+
+[REC]
+NOMBRE DEL PERFUME|CASA|XX% match técnico + emocional|Notas: [top] → [corazón] → [fondo]|Emoción: por qué conecta con su perfil emocional|Técnico: proyección, duración, estación|~$XXX USD · Disfragancias / Valmara / MaferPerfumes
+[REC]
+...más perfumes...
+[/REC]
+
+Da siempre 3 opciones: 1 lujo, 1 mid-range, 1 accesible (a menos que el usuario especifique presupuesto fijo).
+
+═══ PSICOLOGÍA DE RECOMENDACIÓN ═══
+- Conecta SIEMPRE el perfume con emociones, momentos, y la identidad que el usuario quiere proyectar
+- Usa lenguaje sensorial: "proyecta autoridad sin intimidar", "deja una estela que hace girar cabezas", "evoca confianza serena"
+- Si alguien no sabe qué quiere, hazle el test de personalidad olfativa (empieza por las memorias)
+- Recuerda todo lo dicho en la conversación y construye sobre eso
+- Responde SIEMPRE en español, de forma cálida y cercana como un amigo experto`;
+
+let msgs = [], profile = {}, busy = false, phase = 0;
+
+const phaseNames = ['Inicio', 'Perfil básico', 'ADN emocional', 'Recomendando'];
+const phaseProgress = [0, 33, 66, 100];
+
+function setPhase(p) {
+  phase = p;
+  document.getElementById('phase-label').textContent = phaseNames[p] || 'Conversando';
+  document.getElementById('progress').style.width = (phaseProgress[p] || 100) + '%';
+}
+
+function addMsg(role, html) {
+  const c = document.getElementById('chat');
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  const label = role === 'bot' ? '✦' : 'Tú';
+  d.innerHTML = `<div class="av ${role}">${label}</div><div class="bub ${role}">${html}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+function parseReply(t) {
+  if (!t.includes('[REC]')) return t.replace(/\n/g, '<br>');
+  const i = t.indexOf('[REC]'), e = t.indexOf('[/REC]');
+  const before = t.slice(0, i).replace(/\n/g, '<br>');
+  const after = e > -1 ? t.slice(e + 6).replace(/\n/g, '<br>') : '';
+  const block = t.slice(i, e > -1 ? e : undefined);
+  const lines = block.split('[REC]').map(l => l.trim()).filter(l => l && l !== '');
+  let cards = '<div class="rec-block">';
+  lines.forEach(ln => {
+    const p = ln.split('|');
+    if (p.length < 3) return;
+    const [nm, hs, mt, nt, em, tc, pr] = p.map(x => (x || '').trim());
+    cards += `<div class="rcard">
+      <div style="flex:1">
+        <div class="rname">${nm}</div>
+        <div class="rhouse">${hs}</div>
+        ${nt ? `<div class="rdetail">${nt}</div>` : ''}
+        ${em ? `<div class="remocion">${em}</div>` : ''}
+        ${tc ? `<div class="rdetail">${tc}</div>` : ''}
+        ${pr ? `<div class="rdetail" style="margin-top:5px;color:#a09ab8">${pr}</div>` : ''}
+      </div>
+      <div class="rmatch">${mt}</div>
+    </div>`;
+  });
+  cards += '</div>';
+  return before + cards + after;
+}
+
+function extractProfile(t) {
+  const l = t.toLowerCase();
+  if (l.includes('hombre') || l.includes('masculin')) profile.genero = 'Hombre';
+  else if (l.includes('mujer') || l.includes('femenin')) profile.genero = 'Mujer';
+  if (l.includes('bogotá') || l.includes('bogota')) profile.ciudad = 'Bogotá';
+  else if (l.includes('medellín') || l.includes('medellin')) profile.ciudad = 'Medellín';
+  else if (l.includes('cali')) profile.ciudad = 'Cali';
+  else if (l.includes('barranquilla')) profile.ciudad = 'Barranquilla';
+  if (l.includes('oficina') || l.includes('trabajo') || l.includes('reunión')) profile.uso = 'Profesional';
+  else if (l.includes('cita') || l.includes('romántic') || l.includes('noche')) profile.uso = 'Nocturno';
+  else if (l.includes('casual') || l.includes('gym') || l.includes('gimnasio')) profile.uso = 'Casual';
+  if (l.match(/\$\d+/) || l.includes('presupuesto') || l.includes('precio')) profile.presupuesto = 'Indicado';
+  if (l.includes('infancia') || l.includes('recuerdo') || l.includes('memoria') || l.includes('evoca')) {
+    profile.adnEmocional = 'Completado';
+    setPhase(3);
+  }
+  renderProfile();
+  if (msgs.length === 2) setPhase(1);
+  if (msgs.length >= 4 && !profile.adnEmocional) setPhase(2);
+}
+
+function renderProfile() {
+  const keys = Object.keys(profile);
+  if (!keys.length) return;
+  document.getElementById('profile-bar').style.display = 'block';
+  const labels = { genero: 'Género', ciudad: 'Ciudad', uso: 'Uso principal', presupuesto: 'Presupuesto', adnEmocional: 'ADN emocional' };
+  document.getElementById('ptags').innerHTML = keys.map(k => `<span class="ptag">${labels[k] || k}: ${profile[k]}</span>`).join('');
+}
+
+function showTyping() {
+  const c = document.getElementById('chat');
+  const d = document.createElement('div');
+  d.id = 'typ'; d.className = 'msg bot';
+  d.innerHTML = `<div class="av bot">✦</div><div class="bub bot"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function hideTyping() { const e = document.getElementById('typ'); if (e) e.remove(); }
+
+async function callAPI(text) {
+  msgs.push({ role: 'user', content: text });
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: msgs, system: SYSTEM })
+  });
+  if (!res.ok) throw new Error(res.status);
+  const data = await res.json();
+  const reply = data.reply || 'Sin respuesta.';
+  msgs.push({ role: 'assistant', content: reply });
+  return reply;
+}
+
+async function send() {
+  const inp = document.getElementById('inp');
+  const btn = document.getElementById('sbtn');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  inp.value = ''; inp.style.height = '44px';
+  document.getElementById('quick-area').style.display = 'none';
+  busy = true; btn.disabled = true;
+  addMsg('user', text.replace(/\n/g, '<br>'));
+  extractProfile(text);
+  showTyping();
+  try {
+    const reply = await callAPI(text);
+    hideTyping();
+    addMsg('bot', parseReply(reply));
+    extractProfile(reply);
+  } catch (e) {
+    hideTyping();
+    addMsg('bot', 'Hubo un error de conexión. Por favor intenta de nuevo.');
+    console.error(e);
+  }
+  busy = false; btn.disabled = false; inp.focus();
+}
+
+function sq(t) { document.getElementById('inp').value = t; send(); }
+function hk(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+function ar(el) { el.style.height = '44px'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+
+setTimeout(() => {
+  addMsg('bot', '¡Hola! 👋 Soy <strong>ScentIQ</strong>, tu asesor personal de perfumes.<br><br>Uso inteligencia real para encontrar el perfume que no solo huele bien en tu piel — sino que conecta con quien eres y cómo quieres ser recordado.<br><br>¿Qué estás buscando hoy?');
+}, 300);
+</script>
+</body>
+</html>

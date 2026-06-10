@@ -1,0 +1,13 @@
+{
+  "name": "scentiq",
+  "version": "1.0.0",
+  "description": "ScentIQ - Asesor personal de perfumes con inteligencia artificial",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": "18.x"
+  }
+}
