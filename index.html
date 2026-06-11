@@ -1,427 +1,385 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScentIQ — Asesor Personal de Perfumes</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --black:#080808;
-  --black2:#0f0f0f;
-  --black3:#161616;
-  --black4:#1e1e1e;
-  --black5:#2a2a2a;
-  --gold:#c9a84c;
-  --gold2:#e8c878;
-  --gold3:#f5e6c0;
-  --gold-dim:rgba(201,168,76,0.15);
-  --gold-border:rgba(201,168,76,0.25);
-  --gold-border2:rgba(201,168,76,0.4);
-  --text:#f0ece4;
-  --text2:#a89880;
-  --text3:#5a5040;
-  --white:rgba(255,255,255,0.06);
-  --white2:rgba(255,255,255,0.1);
-  --r:10px;
-  --r2:16px;
+  --bg:#09090b;--bg2:#111113;--bg3:#18181b;--bg4:#222226;--bg5:#2c2c32;
+  --gold:#c9a84c;--gold2:#e8c97a;--gold3:#f5ead0;--gd:rgba(201,168,76,0.12);--gb:rgba(201,168,76,0.22);--gb2:rgba(201,168,76,0.38);
+  --text:#f2ede6;--text2:#b0a090;--text3:#6a5f50;--text4:#3a342c;
+  --green:#4ade80;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --r:10px;--r2:18px;--r3:24px;
 }
-html,body{height:100%;background:var(--black)}
-body{
-  font-family:'Inter',sans-serif;
-  color:var(--text);
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(201,168,76,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(201,168,76,0.03) 0%, transparent 50%);
-}
+html,body{height:100%;background:var(--bg)}
+body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-direction:column;min-height:100vh;
+  background-image:radial-gradient(ellipse 90% 40% at 50% -10%,rgba(201,168,76,0.07) 0%,transparent 60%)}
 
-/* HEADER */
-.header{
-  padding:1.5rem 2rem;
-  border-bottom:0.5px solid var(--gold-border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:rgba(8,8,8,0.95);
-  backdrop-filter:blur(20px);
-  position:sticky;top:0;z-index:10;
-}
-.brand{display:flex;align-items:center;gap:14px}
-.brand-emblem{
-  width:38px;height:38px;
-  border:0.5px solid var(--gold-border2);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--gold-dim);
-  font-size:16px;
-  letter-spacing:-1px;
-}
-.brand-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:22px;font-weight:400;
-  letter-spacing:0.08em;
-  color:var(--text);
-}
-.brand-name span{color:var(--gold)}
-.brand-tag{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-top:1px}
-.phase-pill{
-  font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
-  padding:5px 14px;border-radius:20px;
-  border:0.5px solid var(--gold-border);
-  color:var(--gold2);background:var(--gold-dim);
-}
+/* ── HEADER ── */
+.hdr{padding:1.25rem 2rem;border-bottom:0.5px solid var(--gb);display:flex;align-items:center;justify-content:space-between;
+  background:rgba(9,9,11,0.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:50%;border:0.5px solid var(--gb2);background:var(--gd);
+  display:flex;align-items:center;justify-content:center;font-size:16px}
+.bname{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;letter-spacing:0.06em}
+.bname span{color:var(--gold)}
+.bsub{font-size:10px;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-top:1px}
+.weather-pill{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);
+  padding:5px 12px;border-radius:20px;border:0.5px solid var(--border2);background:var(--bg3)}
+.weather-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
 
-/* PROGRESS */
-.progress-wrap{height:1px;background:var(--black4)}
-.progress-fill{height:1px;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:width 0.6s ease}
+/* ── PROGRESS ── */
+.prog-bar{height:1px;background:var(--bg4)}
+.prog-fill{height:1px;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:width .6s ease}
 
-/* PROFILE */
-.profile-bar{
-  margin:1rem 2rem 0;
-  padding:10px 16px;
-  border:0.5px solid var(--gold-border);
-  border-radius:var(--r);
-  background:var(--gold-dim);
-  display:none;
-}
-.profile-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
-.profile-tags{display:flex;flex-wrap:wrap;gap:6px}
-.ptag{
-  font-size:11px;padding:3px 11px;border-radius:20px;
-  border:0.5px solid var(--gold-border2);
-  color:var(--gold2);background:rgba(201,168,76,0.08);
-}
+/* ── PROFILE ── */
+.prof-bar{margin:.75rem 2rem 0;padding:10px 16px;border:0.5px solid var(--gb);border-radius:var(--r);
+  background:var(--gd);display:none}
+.prof-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.prof-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ptag{font-size:11px;padding:3px 11px;border-radius:20px;border:0.5px solid var(--gb2);color:var(--gold2);background:rgba(201,168,76,0.07)}
 
-/* CHAT */
-.chat-wrap{
-  flex:1;overflow-y:auto;
-  padding:1.5rem 2rem;
-  display:flex;flex-direction:column;gap:14px;
-}
-.chat-wrap::-webkit-scrollbar{width:3px}
-.chat-wrap::-webkit-scrollbar-thumb{background:var(--black5);border-radius:2px}
+/* ── CHAT ── */
+.chat{flex:1;overflow-y:auto;padding:1.25rem 2rem;display:flex;flex-direction:column;gap:12px}
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
 
-.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeUp 0.28s ease}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fu .26s ease}
 .msg.user{flex-direction:row-reverse}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-.av{
-  width:32px;height:32px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:400;flex-shrink:0;
-}
-.av.bot{
-  border:0.5px solid var(--gold-border2);
-  background:var(--gold-dim);
-  color:var(--gold);
-  font-family:'Cormorant Garamond',serif;
-  font-size:16px;
-}
-.av.user{
-  background:var(--black4);color:var(--text2);
-  border:0.5px solid var(--white2);font-size:10px;
-  letter-spacing:0.05em;
-}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.av.bot{border:0.5px solid var(--gb2);background:var(--gd);color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:15px}
+.av.user{background:var(--bg4);color:var(--text2);border:0.5px solid var(--border2);letter-spacing:.04em}
 
-.bub{
-  max-width:80%;padding:12px 16px;
-  font-size:14px;line-height:1.75;border-radius:var(--r2);
-}
-.bub.bot{
-  background:var(--black3);
-  border:0.5px solid var(--black5);
-  border-top-left-radius:4px;color:var(--text);
-}
-.bub.user{
-  background:var(--black4);
-  border:0.5px solid var(--gold-border);
-  border-top-right-radius:4px;color:var(--text);
-}
+.bub{max-width:82%;padding:11px 15px;font-size:14px;line-height:1.75;border-radius:var(--r2)}
+.bub.bot{background:var(--bg3);border:0.5px solid var(--bg5);border-top-left-radius:4px;color:var(--text)}
+.bub.user{background:var(--bg4);border:0.5px solid var(--gb);border-top-right-radius:4px;color:var(--text)}
 
-/* REC CARDS */
-.rec-block{margin-top:12px;border-top:0.5px solid var(--gold-border);padding-top:12px;display:flex;flex-direction:column;gap:8px}
-.rcard{
-  background:var(--black);
-  border:0.5px solid var(--gold-border);
-  border-radius:var(--r);
-  padding:12px 15px;
-  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
-  transition:border-color 0.2s;
-  cursor:default;
-}
-.rcard:hover{border-color:var(--gold-border2)}
+/* ── REC CARDS ── */
+.rec-section{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.rec-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.rcard{background:var(--bg2);border:0.5px solid var(--gb);border-radius:var(--r2);overflow:hidden;transition:border-color .2s}
+.rcard:hover{border-color:var(--gb2)}
+.rcard-top{padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .rcard-left{flex:1}
-.rname{
-  font-family:'Cormorant Garamond',serif;
-  font-size:17px;font-weight:400;
-  color:var(--gold3);letter-spacing:0.03em;
-}
-.rhouse{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:0.08em;text-transform:uppercase}
-.rdetail{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.55}
-.remocion{font-size:12px;color:var(--gold2);margin-top:4px;font-style:italic;line-height:1.5}
-.rmatch{
-  font-family:'Cormorant Garamond',serif;
-  font-size:22px;font-weight:300;
-  color:var(--gold);white-space:nowrap;padding-top:2px;
-  letter-spacing:-0.02em;
-}
+.rcard-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--gold3);letter-spacing:.03em;line-height:1.2}
+.rcard-house{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.rcard-match{text-align:right}
+.rcard-pct{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--gold);line-height:1}
+.rcard-pct-lbl{font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.rcard-body{padding:0 16px 14px;display:flex;flex-direction:column;gap:7px;border-top:0.5px solid var(--bg5);padding-top:12px}
+.rcard-row{display:flex;gap:8px;align-items:flex-start}
+.rcard-row-icon{font-size:12px;margin-top:1px;flex-shrink:0;opacity:.6}
+.rcard-row-text{font-size:12px;color:var(--text2);line-height:1.55}
+.rcard-row-text.emo{color:var(--gold2);font-style:italic}
+.rcard-price{display:flex;justify-content:space-between;align-items:center;margin-top:4px;
+  padding:8px 12px;background:var(--bg3);border-radius:var(--r);border:0.5px solid var(--bg5)}
+.rcard-price-val{font-size:13px;font-weight:500;color:var(--text)}
+.rcard-price-vendor{font-size:11px;color:var(--text3)}
 
-/* TYPING */
-.typing-dots{display:flex;gap:5px;align-items:center;padding:5px 0}
-.dot{width:4px;height:4px;border-radius:50%;background:var(--gold-border2);animation:blink 1.4s infinite}
-.dot:nth-child(2){animation-delay:.25s}.dot:nth-child(3){animation-delay:.5s}
+/* ── TYPING ── */
+.tdots{display:flex;gap:5px;align-items:center;padding:5px 0}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--gb2);animation:blink 1.3s infinite}
+.dot:nth-child(2){animation-delay:.22s}.dot:nth-child(3){animation-delay:.44s}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
 
-/* DIVIDER */
-.divider{height:0.5px;background:var(--black4);margin:0 2rem}
+/* ── QUIZ STEP ── */
+.quiz-wrap{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.quiz-q{font-size:13px;color:var(--text2);margin-bottom:4px}
+.quiz-opts{display:flex;flex-wrap:wrap;gap:7px}
+.qopt{font-size:13px;padding:8px 16px;border-radius:var(--r2);border:0.5px solid var(--border2);
+  background:var(--bg4);color:var(--text2);cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif}
+.qopt:hover,.qopt.sel{border-color:var(--gb2);color:var(--gold2);background:var(--gd)}
 
-/* QUICK */
-.quick-area{padding:1rem 2rem}
-.quick-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
-.quick-row{display:flex;flex-wrap:wrap;gap:8px}
-.qbtn{
-  font-size:12px;padding:7px 16px;border-radius:20px;
-  border:0.5px solid var(--black5);
-  background:transparent;color:var(--text2);
-  cursor:pointer;transition:all .2s;letter-spacing:0.02em;
-  font-family:'Inter',sans-serif;
-}
-.qbtn:hover{border-color:var(--gold-border2);color:var(--gold2);background:var(--gold-dim)}
+/* ── QUICK ── */
+.quick-area{padding:.75rem 2rem}
+.quick-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.quick-row{display:flex;flex-wrap:wrap;gap:7px}
+.qbtn{font-size:12px;padding:7px 15px;border-radius:20px;border:0.5px solid var(--bg5);
+  background:transparent;color:var(--text2);cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif}
+.qbtn:hover{border-color:var(--gb2);color:var(--gold2);background:var(--gd)}
 
-/* INPUT */
-.input-area{
-  padding:1rem 2rem 1.5rem;
-  border-top:0.5px solid var(--black4);
-  background:rgba(8,8,8,0.98);
-}
-.input-row{display:flex;gap:10px;align-items:flex-end}
-#inp{
-  flex:1;padding:12px 18px;
-  font-size:14px;border-radius:var(--r2);
-  border:0.5px solid var(--black5);
-  background:var(--black3);color:var(--text);
-  resize:none;font-family:'Inter',sans-serif;
-  line-height:1.55;height:46px;max-height:120px;overflow:hidden;
-  transition:border-color .25s;letter-spacing:0.01em;
-}
+/* ── INPUT ── */
+.inp-area{padding:.75rem 2rem 1.5rem;border-top:0.5px solid var(--bg4);background:rgba(9,9,11,.98)}
+.inp-row{display:flex;gap:9px;align-items:flex-end}
+#inp{flex:1;padding:11px 16px;font-size:14px;border-radius:var(--r3);border:0.5px solid var(--bg5);
+  background:var(--bg3);color:var(--text);resize:none;font-family:'Inter',sans-serif;
+  line-height:1.55;height:44px;max-height:120px;overflow:hidden;transition:border-color .22s}
 #inp::placeholder{color:var(--text3)}
-#inp:focus{outline:none;border-color:var(--gold-border2)}
-.sbtn{
-  width:46px;height:46px;border-radius:50%;
-  background:linear-gradient(135deg,#b8942a,#e8c878);
-  border:none;cursor:pointer;
-  color:var(--black);font-size:18px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:opacity .2s,transform .15s;
-}
-.sbtn:hover{opacity:.88;transform:scale(1.06)}
-.sbtn:disabled{opacity:.3;cursor:default;transform:none}
-.hint{
-  font-size:10px;color:var(--text3);margin-top:8px;
-  display:flex;align-items:center;gap:6px;
-  letter-spacing:0.06em;text-transform:uppercase;
-}
-.hint-line{flex:1;height:0.5px;background:var(--black4)}
+#inp:focus{outline:none;border-color:var(--gb2)}
+.sbtn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#b8942a,#e8c87a);
+  border:none;cursor:pointer;color:#1a1000;font-size:17px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .18s,transform .12s}
+.sbtn:hover{opacity:.86;transform:scale(1.06)}
+.sbtn:disabled{opacity:.28;cursor:default;transform:none}
+.hint{font-size:10px;color:var(--text4);margin-top:7px;text-align:center;letter-spacing:.06em;text-transform:uppercase}
 
 @media(max-width:600px){
-  .header,.chat-wrap,.quick-area,.input-area,.profile-bar,.divider{padding-left:1rem;padding-right:1rem}
-  .profile-bar,.divider{margin-left:1rem;margin-right:1rem}
+  .hdr,.chat,.quick-area,.inp-area,.prof-bar{padding-left:1rem;padding-right:1rem}
+  .prof-bar{margin-left:1rem;margin-right:1rem}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
+<div class="hdr">
   <div class="brand">
-    <div class="brand-emblem">◈</div>
+    <div class="logo">◈</div>
     <div>
-      <div class="brand-name">Scent<span>IQ</span></div>
-      <div class="brand-tag">Asesor personal de perfumes</div>
+      <div class="bname">Scent<span>IQ</span></div>
+      <div class="bsub">Asesor personal de perfumes</div>
     </div>
   </div>
-  <div class="phase-pill" id="phase-pill">Inicio</div>
+  <div class="weather-pill" id="weather-pill">
+    <div class="weather-dot"></div>
+    <span id="weather-txt">Detectando clima...</span>
+  </div>
 </div>
 
-<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
 
-<div id="profile-bar" class="profile-bar">
-  <div class="profile-label">Perfil olfativo</div>
-  <div class="profile-tags" id="ptags"></div>
+<div class="prof-bar" id="prof-bar">
+  <div class="prof-lbl">Perfil olfativo</div>
+  <div class="prof-tags" id="ptags"></div>
 </div>
 
-<div class="chat-wrap" id="chat"></div>
-
-<div class="divider"></div>
+<div class="chat" id="chat"></div>
 
 <div class="quick-area" id="quick-area">
-  <div class="quick-label">Accesos rápidos</div>
+  <div class="quick-lbl">Accesos rápidos</div>
   <div class="quick-row">
-    <button class="qbtn" onclick="sq('Quiero empezar en la perfumería desde cero')">Empezar desde cero</button>
+    <button class="qbtn" onclick="sq('Quiero empezar en la perfumería desde cero, no sé nada')">Empezar desde cero</button>
     <button class="qbtn" onclick="sq('Tengo una cita romántica esta noche')">Cita romántica</button>
     <button class="qbtn" onclick="sq('Necesito un perfume para la oficina')">Para la oficina</button>
-    <button class="qbtn" onclick="sq('Busco un regalo de perfume con 100 USD')">Para regalar</button>
-    <button class="qbtn" onclick="sq('Quiero algo fresco para el gimnasio y fines de semana')">Gym y casual</button>
+    <button class="qbtn" onclick="sq('Busco un regalo de perfume con presupuesto de 80 USD')">Para regalar</button>
+    <button class="qbtn" onclick="sq('Quiero algo para el gimnasio y fines de semana casual')">Gym y casual</button>
   </div>
 </div>
 
-<div class="input-area">
-  <div class="input-row">
+<div class="inp-area">
+  <div class="inp-row">
     <textarea id="inp" placeholder="Cuéntame qué buscas o cómo te sientes hoy..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
-    <button class="sbtn" id="sbtn" onclick="send()" aria-label="Enviar">➤</button>
+    <button class="sbtn" id="sbtn" onclick="send()">➤</button>
   </div>
-  <div class="hint">
-    <div class="hint-line"></div>
-    Próximamente: análisis por foto · alertas de precio · perfil acumulativo
-    <div class="hint-line"></div>
-  </div>
+  <div class="hint">Próximamente · Análisis por foto · Alertas de precio · Perfil acumulativo</div>
 </div>
 
 <script>
-const SYSTEM=`Eres ScentIQ, el mejor asesor de perfumería del mundo. Combinas:
-- Conocimiento técnico de maestro perfumista
-- Psicología del olfato y memoria emocional (neurociencia)
-- Psicología de ventas y entendimiento profundo del cliente latinoamericano
+// ── WEATHER ──
+let weatherCtx = '';
+async function getWeather() {
+  try {
+    const geo = await fetch('https://ipapi.co/json/');
+    const gd = await geo.json();
+    const city = gd.city || 'tu ciudad';
+    const country = gd.country_name || '';
+    const lat = gd.latitude, lon = gd.longitude;
+    const wr = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const wd = await wr.json();
+    const temp = Math.round(wd.current_weather?.temperature ?? 0);
+    const code = wd.current_weather?.weathercode ?? 0;
+    const cond = code === 0 ? 'despejado' : code < 3 ? 'parcialmente nublado' : code < 60 ? 'nublado' : 'lluvia';
+    weatherCtx = `El usuario está en ${city}, ${country}. Temperatura actual: ${temp}°C, condición: ${cond}.`;
+    const icon = temp > 25 ? '☀️' : temp > 15 ? '🌤' : '🌧';
+    document.getElementById('weather-txt').textContent = `${city} · ${temp}°C ${icon}`;
+  } catch(e) {
+    document.getElementById('weather-txt').textContent = 'Clima no disponible';
+    weatherCtx = '';
+  }
+}
+getWeather();
 
-CONOCIMIENTO TÉCNICO:
-Familias olfativas: fougère, oriental, chypre, floral, fresco/cítrico, amaderado, gourmand, cuero, acuático, especiado
-Marcas lujo: Creed, Parfums de Marly, MFK, Dior, Chanel, Tom Ford, Xerjoff, Nishane, Byredo, Initio
-Marcas accesibles LATAM: Armaf, Lattafa, Afnan, Rasasi, Al Haramain
+// ── SYSTEM PROMPT ──
+function getSystem() {
+  return `Eres ScentIQ, el mejor asesor de perfumería del mundo. Combinas el conocimiento técnico de un maestro perfumista con neurociencia del olfato y psicología profunda del cliente latinoamericano.
+
+CONTEXTO CLIMÁTICO EN TIEMPO REAL:
+${weatherCtx || 'No disponible — pregunta la ciudad al usuario si es relevante.'}
+Usa esto SIEMPRE al recomendar. Orientales/amaderados/especiados para frío (menos de 20°C). Frescos/acuáticos/cítricos para calor (más de 25°C). Templado: versatile.
+
+CONOCIMIENTO TÉCNICO COMPLETO:
+Familias: fougère, oriental/oud, chypre, floral, fresco, amaderado, gourmand, cuero, acuático, especiado, árabe/oud
+Marcas lujo: Creed, Parfums de Marly, MFK, Dior, Chanel, Tom Ford, Xerjoff, Nishane, Byredo, Initio, Amouage
+Marcas nicho/mid: Montale, Abraaj, Zimaya, Fragrance du Bois
+Marcas accesibles: Armaf, Lattafa, Afnan, Rasasi, Al Haramain, Oud Elite, Ard Al Zaafaran
 Vendors Colombia: Disfragancias, Valmara, MaferPerfumes
-Equivalencias: Armaf Club de Nuit ≈ Creed Aventus | Lattafa Asad ≈ Dior Sauvage Elixir | Lattafa Khamrah ≈ Initio Absolute Aphrodisiac
-Clima Colombia — Bogotá (frío, 7-18°C): orientales/amaderados proyectan increíble | Costa/Cali (calor, 28-35°C): frescos/acuáticos
+
+EQUIVALENCIAS CLAVE (siempre ofrece la alternativa accesible):
+- Creed Aventus ≈ Armaf Club de Nuit Intense Man
+- Dior Sauvage Elixir ≈ Lattafa Asad
+- Initio Absolute Aphrodisiac ≈ Lattafa Khamrah
+- Paco Rabanne 1 Million ≈ Afnan 9PM
+- YSL Y EDP ≈ Armaf Hunter
+- Bleu de Chanel ≈ Armaf Tres Nuit
+
+REGLAS CRÍTICAS DE RECOMENDACIÓN:
+1. Si el usuario menciona perfumes árabes/orientales (Lattafa, Rasasi, Al Haramain, Oud, etc.) → recomendar PRIMERO dentro de ese universo. No saltar a Chanel o Dior sin justificación.
+2. Si el usuario tiene presupuesto bajo → no recomendar lujo primero
+3. Si el usuario tiene perfumes de lujo → puedes recomendar lujo
+4. Si el usuario menciona que le gusta el Asad (oriental/especiado/amaderado) → recomendar: Khamrah, Oud Mood, Al Haramain Amber Oud, Afnan Supremacy Noir, Lattafa Oud For Glory
+5. NUNCA recomendar algo de un universo completamente diferente al perfil sin explicarlo
+6. SIEMPRE tener en cuenta el clima actual para la recomendación
 
 METODOLOGÍA DE 2 FASES:
-FASE 1 — PERFIL BÁSICO: género, ciudad, ocasiones, estilo, presupuesto
-FASE 2 — ADN EMOCIONAL (el diferenciador):
-- ¿Qué olores de tu infancia recuerdas con cariño?
-- ¿Hay algún olor que asocies con alguien importante?
+FASE 1 — PERFIL BÁSICO: género, ciudad (ya lo tienes por clima), ocasiones, estilo, presupuesto, perfumes que ya tiene o le gustan
+FASE 2 — ADN EMOCIONAL:
+- ¿Qué olores de tu infancia o vida recuerdas con cariño?
 - ¿Cómo quieres que te recuerden cuando salgas de un lugar?
-- ¿Buscas evocar el pasado o crear identidad nueva?
+- ¿Buscas evocar algo del pasado o crear identidad nueva?
 
-La neurociencia confirma que el olfato conecta directamente con amígdala e hipocampo. Los perfumes que resuenan con memorias positivas generan respuesta emocional 10x más fuerte.
+FORMATO DE RESPUESTA — MUY IMPORTANTE:
+Para texto normal: escribe naturalmente, sin símbolos raros ni corchetes.
+Para recomendaciones formales usa EXACTAMENTE este JSON al final:
+<RECS>
+[
+  {
+    "nombre": "Nombre del perfume",
+    "casa": "Casa perfumista",
+    "match": "94%",
+    "notas": "Bergamota, pimienta → oud, rosa → sándalo, almizcle",
+    "emocion": "Frase corta sobre qué sensación o recuerdo evoca",
+    "tecnico": "Proyección alta · 8-10h · Ideal para clima frío",
+    "precio": "~$45 USD",
+    "vendor": "MaferPerfumes / Valmara"
+  }
+]
+</RECS>
 
-FORMATO DE RECOMENDACIÓN — usa exactamente:
-[REC]
-NOMBRE|CASA|XX%|Notas: top → corazón → fondo|Emoción: conexión emocional breve|Técnico: proyección y duración|~$XXX USD · vendor Colombia
-[REC]
-...
-[/REC]
+Habla siempre de forma cálida, cercana, como un amigo experto. SIEMPRE en español.`;
+}
 
-3 opciones siempre: lujo, mid-range, accesible. Habla cálido y cercano. Responde SIEMPRE en español.`;
-
+// ── STATE ──
 let msgs=[],profile={},busy=false;
-const phases=['Inicio','Perfil básico','ADN emocional','Recomendando'];
-const progress=[0,33,66,100];
-let phaseIdx=0;
 
-function setPhase(i){
-  phaseIdx=i;
-  document.getElementById('phase-pill').textContent=phases[i]||'Conversando';
-  document.getElementById('progress').style.width=(progress[i]||100)+'%';
-}
-
-function addMsg(role,html){
-  const c=document.getElementById('chat');
-  const d=document.createElement('div');
-  d.className='msg '+role;
-  const lbl=role==='bot'?'◈':'Tú';
-  d.innerHTML=`<div class="av ${role}">${lbl}</div><div class="bub ${role}">${html}</div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-
-function parseReply(t){
-  if(!t.includes('[REC]'))return t.replace(/\n/g,'<br>');
-  const i=t.indexOf('[REC]'),e=t.indexOf('[/REC]');
-  const before=t.slice(0,i).replace(/\n/g,'<br>');
-  const after=e>-1?t.slice(e+6).replace(/\n/g,'<br>'):'';
-  const block=t.slice(i,e>-1?e:undefined);
-  const lines=block.split('[REC]').map(l=>l.trim()).filter(l=>l&&l!=='');
-  let cards='<div class="rec-block">';
-  lines.forEach(ln=>{
-    const p=ln.split('|');
-    if(p.length<3)return;
-    const[nm,hs,mt,nt,em,tc,pr]=(p||[]).map(x=>(x||'').trim());
-    cards+=`<div class="rcard"><div class="rcard-left">
-      <div class="rname">${nm}</div>
-      <div class="rhouse">${hs}</div>
-      ${nt?`<div class="rdetail">${nt}</div>`:''}
-      ${em?`<div class="remocion">${em}</div>`:''}
-      ${tc?`<div class="rdetail">${tc}</div>`:''}
-      ${pr?`<div class="rdetail" style="margin-top:6px;color:var(--text3)">${pr}</div>`:''}
-    </div><div class="rmatch">${mt}</div></div>`;
-  });
-  cards+='</div>';
-  return before+cards+after;
-}
-
-function extractProfile(t){
+// ── PROFILE ──
+function extractProfile(t) {
   const l=t.toLowerCase();
-  if(l.includes('hombre')||l.includes('masculin'))profile.genero='Hombre';
-  else if(l.includes('mujer')||l.includes('femenin'))profile.genero='Mujer';
+  if(l.match(/\bsoy hombre\b|^hombre$|\bmasculin/))profile.genero='Hombre';
+  else if(l.match(/\bsoy mujer\b|^mujer$|\bfemenin/))profile.genero='Mujer';
   if(l.includes('bogotá')||l.includes('bogota'))profile.ciudad='Bogotá';
   else if(l.includes('medellín')||l.includes('medellin'))profile.ciudad='Medellín';
   else if(l.includes('cali'))profile.ciudad='Cali';
-  if(l.includes('oficina')||l.includes('trabajo'))profile.uso='Profesional';
-  else if(l.includes('cita')||l.includes('romántic'))profile.uso='Nocturno';
-  else if(l.includes('casual')||l.includes('gym'))profile.uso='Casual';
+  else if(l.includes('barranquilla'))profile.ciudad='Barranquilla';
+  else if(l.includes('santa marta'))profile.ciudad='Santa Marta';
+  if(l.includes('oficina')||l.includes('trabajo')||l.includes('reunión'))profile.uso='Profesional';
+  else if(l.includes('cita')||l.includes('romántic')||l.includes('noche'))profile.uso='Nocturno';
+  else if(l.includes('casual')||l.includes('gym')||l.includes('gimnasio'))profile.uso='Casual';
   if(l.match(/\$\d+/)||l.includes('presupuesto'))profile.presupuesto='Indicado';
-  if(l.includes('infancia')||l.includes('recuerdo')||l.includes('memoria')){profile.adn='Completado';setPhase(3);}
+  if(l.includes('lattafa')||l.includes('rasasi')||l.includes('armaf')||l.includes('árabe')||l.includes('oud'))profile.universo='Oriental/Árabe';
+  else if(l.includes('creed')||l.includes('marly')||l.includes('xerjoff'))profile.universo='Lujo occidental';
   renderProfile();
   if(msgs.length===2)setPhase(1);
-  if(msgs.length>=4&&!profile.adn)setPhase(2);
+  if(msgs.length>=4)setPhase(2);
+  if(l.includes('infancia')||l.includes('recuerdo')||l.includes('emoción'))setPhase(3);
 }
 
 function renderProfile(){
   const keys=Object.keys(profile);
   if(!keys.length)return;
-  document.getElementById('profile-bar').style.display='block';
-  const lb={genero:'Género',ciudad:'Ciudad',uso:'Uso',presupuesto:'Presupuesto',adn:'ADN emocional'};
+  document.getElementById('prof-bar').style.display='block';
+  const lb={genero:'Género',ciudad:'Ciudad',uso:'Ocasión',presupuesto:'Presupuesto',universo:'Universo'};
   document.getElementById('ptags').innerHTML=keys.map(k=>`<span class="ptag">${lb[k]||k}: ${profile[k]}</span>`).join('');
+}
+
+const phases=['Inicio','Perfil básico','ADN emocional','Recomendando'];
+const progs=[0,33,66,100];
+function setPhase(i){
+  document.getElementById('prog').style.width=(progs[i]||100)+'%';
+}
+
+// ── RENDER ──
+function parseReply(t) {
+  if (!t.includes('<RECS>')) return t.replace(/\n/g,'<br>');
+  const si = t.indexOf('<RECS>'), ei = t.indexOf('</RECS>');
+  const before = t.slice(0, si).replace(/\n/g,'<br>');
+  const after = ei > -1 ? t.slice(ei + 6).replace(/\n/g,'<br>') : '';
+  const jsonStr = t.slice(si + 6, ei > -1 ? ei : undefined).trim();
+  let recs = [];
+  try { recs = JSON.parse(jsonStr); } catch(e) { return t.replace(/\n/g,'<br>'); }
+  let html = before + '<div class="rec-section"><div class="rec-label">Recomendaciones personalizadas</div>';
+  recs.forEach(r => {
+    html += `<div class="rcard">
+      <div class="rcard-top">
+        <div class="rcard-left">
+          <div class="rcard-name">${r.nombre||''}</div>
+          <div class="rcard-house">${r.casa||''}</div>
+        </div>
+        <div class="rcard-match">
+          <div class="rcard-pct">${r.match||''}</div>
+          <div class="rcard-pct-lbl">compatibilidad</div>
+        </div>
+      </div>
+      <div class="rcard-body">
+        ${r.notas?`<div class="rcard-row"><span class="rcard-row-icon">🎵</span><div class="rcard-row-text">${r.notas}</div></div>`:''}
+        ${r.emocion?`<div class="rcard-row"><span class="rcard-row-icon">✨</span><div class="rcard-row-text emo">${r.emocion}</div></div>`:''}
+        ${r.tecnico?`<div class="rcard-row"><span class="rcard-row-icon">⚡</span><div class="rcard-row-text">${r.tecnico}</div></div>`:''}
+        <div class="rcard-price">
+          <div class="rcard-price-val">${r.precio||''}</div>
+          <div class="rcard-price-vendor">${r.vendor||''}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  html += '</div>' + after;
+  return html;
+}
+
+function addMsg(role, html) {
+  const c = document.getElementById('chat');
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.innerHTML = `<div class="av ${role}">${role==='bot'?'◈':'Tú'}</div><div class="bub ${role}">${html}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
 }
 
 function showTyping(){
   const c=document.getElementById('chat');
   const d=document.createElement('div');
   d.id='typ';d.className='msg bot';
-  d.innerHTML=`<div class="av bot">◈</div><div class="bub bot"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  d.innerHTML=`<div class="av bot">◈</div><div class="bub bot"><div class="tdots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 
-async function callAPI(text){
+// ── API ──
+async function callAPI(text) {
   msgs.push({role:'user',content:text});
-  const res=await fetch('/api/chat',{
+  const res = await fetch('/api/chat', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:msgs,system:SYSTEM})
+    body:JSON.stringify({messages:msgs, system:getSystem()})
   });
-  if(!res.ok)throw new Error(res.status);
-  const data=await res.json();
-  const reply=data.reply||'Sin respuesta.';
+  if(!res.ok) throw new Error(res.status);
+  const data = await res.json();
+  const reply = data.reply || 'Sin respuesta.';
   msgs.push({role:'assistant',content:reply});
   return reply;
 }
 
-async function send(){
+// ── SEND ──
+async function send() {
   const inp=document.getElementById('inp');
   const btn=document.getElementById('sbtn');
   const text=inp.value.trim();
   if(!text||busy)return;
-  inp.value='';inp.style.height='46px';
+  inp.value='';inp.style.height='44px';
   document.getElementById('quick-area').style.display='none';
   busy=true;btn.disabled=true;
   addMsg('user',text.replace(/\n/g,'<br>'));
-  extractProfile(text);showTyping();
-  try{
-    const reply=await callAPI(text);
-    hideTyping();addMsg('bot',parseReply(reply));
+  extractProfile(text);
+  showTyping();
+  try {
+    const reply = await callAPI(text);
+    hideTyping();
+    addMsg('bot', parseReply(reply));
     extractProfile(reply);
-  }catch(e){
-    hideTyping();addMsg('bot','Hubo un error de conexión. Por favor intenta de nuevo.');
+  } catch(e) {
+    hideTyping();
+    addMsg('bot','Hubo un error de conexión. Por favor intenta de nuevo.');
     console.error(e);
   }
   busy=false;btn.disabled=false;inp.focus();
@@ -429,11 +387,12 @@ async function send(){
 
 function sq(t){document.getElementById('inp').value=t;send();}
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
-function ar(el){el.style.height='46px';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function ar(el){el.style.height='44px';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 
+// ── INIT ──
 setTimeout(()=>{
-  addMsg('bot','Bienvenido. Soy <strong>ScentIQ</strong>, tu asesor personal de perfumes.<br><br>No solo te recomiendo lo que huele bien — encuentro el perfume que conecta con tu identidad, tu historia y cómo quieres ser recordado.<br><br>¿Qué estás buscando hoy?');
-},350);
+  addMsg('bot','Bienvenido. Soy <strong>ScentIQ</strong>, tu asesor personal de perfumes.<br><br>Uso inteligencia real para encontrar el perfume que conecta con tu identidad, tu historia y cómo quieres ser recordado — y lo ajusto al clima de tu ciudad en tiempo real.<br><br>¿Qué estás buscando hoy?');
+},300);
 </script>
 </body>
 </html>
