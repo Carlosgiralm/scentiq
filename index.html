@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#09090b;--bg2:#111113;--bg3:#18181b;--bg4:#222226;--bg5:#2c2c32;
-  --gold:#c9a84c;--gold2:#e8c97a;--gold3:#f5ead0;--gd:rgba(201,168,76,0.12);--gb:rgba(201,168,76,0.22);--gb2:rgba(201,168,76,0.38);
+  --gold:#c9a84c;--gold2:#e8c97a;--gold3:#f5ead0;
+  --gd:rgba(201,168,76,0.1);--gb:rgba(201,168,76,0.2);--gb2:rgba(201,168,76,0.38);
   --text:#f2ede6;--text2:#b0a090;--text3:#6a5f50;--text4:#3a342c;
   --green:#4ade80;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
   --r:10px;--r2:18px;--r3:24px;
@@ -18,31 +19,29 @@ html,body{height:100%;background:var(--bg)}
 body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-direction:column;min-height:100vh;
   background-image:radial-gradient(ellipse 90% 40% at 50% -10%,rgba(201,168,76,0.07) 0%,transparent 60%)}
 
-/* ── HEADER ── */
-.hdr{padding:1.25rem 2rem;border-bottom:0.5px solid var(--gb);display:flex;align-items:center;justify-content:space-between;
-  background:rgba(9,9,11,0.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:20}
+.hdr{padding:1.1rem 2rem;border-bottom:0.5px solid var(--gb);display:flex;align-items:center;justify-content:space-between;
+  background:rgba(9,9,11,0.97);backdrop-filter:blur(20px);position:sticky;top:0;z-index:20}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{width:36px;height:36px;border-radius:50%;border:0.5px solid var(--gb2);background:var(--gd);
-  display:flex;align-items:center;justify-content:center;font-size:16px}
-.bname{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;letter-spacing:0.06em}
+.logo{width:34px;height:34px;border-radius:50%;border:0.5px solid var(--gb2);background:var(--gd);
+  display:flex;align-items:center;justify-content:center;font-size:15px}
+.bname{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;letter-spacing:0.06em}
 .bname span{color:var(--gold)}
 .bsub{font-size:10px;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-top:1px}
-.weather-pill{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);
+.hdr-right{display:flex;align-items:center;gap:10px}
+.weather-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);
   padding:5px 12px;border-radius:20px;border:0.5px solid var(--border2);background:var(--bg3)}
-.weather-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+.wdot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green)}
+.user-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gold2);
+  padding:5px 12px;border-radius:20px;border:0.5px solid var(--gb);background:var(--gd);display:none}
 
-/* ── PROGRESS ── */
 .prog-bar{height:1px;background:var(--bg4)}
 .prog-fill{height:1px;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:width .6s ease}
 
-/* ── PROFILE ── */
-.prof-bar{margin:.75rem 2rem 0;padding:10px 16px;border:0.5px solid var(--gb);border-radius:var(--r);
-  background:var(--gd);display:none}
+.prof-bar{margin:.75rem 2rem 0;padding:10px 16px;border:0.5px solid var(--gb);border-radius:var(--r);background:var(--gd);display:none}
 .prof-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
 .prof-tags{display:flex;flex-wrap:wrap;gap:6px}
 .ptag{font-size:11px;padding:3px 11px;border-radius:20px;border:0.5px solid var(--gb2);color:var(--gold2);background:rgba(201,168,76,0.07)}
 
-/* ── CHAT ── */
 .chat{flex:1;overflow-y:auto;padding:1.25rem 2rem;display:flex;flex-direction:column;gap:12px}
 .chat::-webkit-scrollbar{width:3px}
 .chat::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
@@ -59,43 +58,32 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
 .bub.bot{background:var(--bg3);border:0.5px solid var(--bg5);border-top-left-radius:4px;color:var(--text)}
 .bub.user{background:var(--bg4);border:0.5px solid var(--gb);border-top-right-radius:4px;color:var(--text)}
 
-/* ── REC CARDS ── */
 .rec-section{margin-top:14px;display:flex;flex-direction:column;gap:10px}
-.rec-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.rec-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
 .rcard{background:var(--bg2);border:0.5px solid var(--gb);border-radius:var(--r2);overflow:hidden;transition:border-color .2s}
 .rcard:hover{border-color:var(--gb2)}
-.rcard-top{padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.rcard-left{flex:1}
-.rcard-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--gold3);letter-spacing:.03em;line-height:1.2}
+.rcard-img{width:100%;height:160px;object-fit:cover;opacity:0.85;display:block;background:var(--bg4)}
+.rcard-img-placeholder{width:100%;height:160px;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--text4)}
+.rcard-top{padding:14px 16px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.rcard-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--gold3);letter-spacing:.03em;line-height:1.2}
 .rcard-house{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
-.rcard-match{text-align:right}
-.rcard-pct{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--gold);line-height:1}
-.rcard-pct-lbl{font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-.rcard-body{padding:0 16px 14px;display:flex;flex-direction:column;gap:7px;border-top:0.5px solid var(--bg5);padding-top:12px}
-.rcard-row{display:flex;gap:8px;align-items:flex-start}
-.rcard-row-icon{font-size:12px;margin-top:1px;flex-shrink:0;opacity:.6}
-.rcard-row-text{font-size:12px;color:var(--text2);line-height:1.55}
-.rcard-row-text.emo{color:var(--gold2);font-style:italic}
-.rcard-price{display:flex;justify-content:space-between;align-items:center;margin-top:4px;
+.rcard-pct{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--gold);line-height:1;text-align:right}
+.rcard-pct-lbl{font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;text-align:right}
+.rcard-body{padding:0 16px 14px;display:flex;flex-direction:column;gap:6px;border-top:0.5px solid var(--bg4);padding-top:10px}
+.rrow{display:flex;gap:8px;align-items:flex-start}
+.rico{font-size:12px;flex-shrink:0;opacity:.55;margin-top:1px}
+.rtxt{font-size:12px;color:var(--text2);line-height:1.55}
+.rtxt.emo{color:var(--gold2);font-style:italic}
+.rprice{display:flex;justify-content:space-between;align-items:center;margin-top:6px;
   padding:8px 12px;background:var(--bg3);border-radius:var(--r);border:0.5px solid var(--bg5)}
-.rcard-price-val{font-size:13px;font-weight:500;color:var(--text)}
-.rcard-price-vendor{font-size:11px;color:var(--text3)}
+.rprice-val{font-size:13px;font-weight:500;color:var(--text)}
+.rprice-vendor{font-size:11px;color:var(--text3)}
 
-/* ── TYPING ── */
 .tdots{display:flex;gap:5px;align-items:center;padding:5px 0}
 .dot{width:4px;height:4px;border-radius:50%;background:var(--gb2);animation:blink 1.3s infinite}
 .dot:nth-child(2){animation-delay:.22s}.dot:nth-child(3){animation-delay:.44s}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
 
-/* ── QUIZ STEP ── */
-.quiz-wrap{margin-top:10px;display:flex;flex-direction:column;gap:8px}
-.quiz-q{font-size:13px;color:var(--text2);margin-bottom:4px}
-.quiz-opts{display:flex;flex-wrap:wrap;gap:7px}
-.qopt{font-size:13px;padding:8px 16px;border-radius:var(--r2);border:0.5px solid var(--border2);
-  background:var(--bg4);color:var(--text2);cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif}
-.qopt:hover,.qopt.sel{border-color:var(--gb2);color:var(--gold2);background:var(--gd)}
-
-/* ── QUICK ── */
 .quick-area{padding:.75rem 2rem}
 .quick-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
 .quick-row{display:flex;flex-wrap:wrap;gap:7px}
@@ -103,7 +91,6 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
   background:transparent;color:var(--text2);cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif}
 .qbtn:hover{border-color:var(--gb2);color:var(--gold2);background:var(--gd)}
 
-/* ── INPUT ── */
 .inp-area{padding:.75rem 2rem 1.5rem;border-top:0.5px solid var(--bg4);background:rgba(9,9,11,.98)}
 .inp-row{display:flex;gap:9px;align-items:flex-end}
 #inp{flex:1;padding:11px 16px;font-size:14px;border-radius:var(--r3);border:0.5px solid var(--bg5);
@@ -125,7 +112,6 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="brand">
     <div class="logo">◈</div>
@@ -134,9 +120,9 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
       <div class="bsub">Asesor personal de perfumes</div>
     </div>
   </div>
-  <div class="weather-pill" id="weather-pill">
-    <div class="weather-dot"></div>
-    <span id="weather-txt">Detectando clima...</span>
+  <div class="hdr-right">
+    <div class="user-pill" id="user-pill">👤 <span id="user-visits"></span></div>
+    <div class="weather-pill" id="weather-pill"><div class="wdot"></div><span id="weather-txt">Detectando clima...</span></div>
   </div>
 </div>
 
@@ -152,11 +138,11 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
 <div class="quick-area" id="quick-area">
   <div class="quick-lbl">Accesos rápidos</div>
   <div class="quick-row">
-    <button class="qbtn" onclick="sq('Quiero empezar en la perfumería desde cero, no sé nada')">Empezar desde cero</button>
+    <button class="qbtn" onclick="sq('Quiero empezar en la perfumería desde cero')">Empezar desde cero</button>
     <button class="qbtn" onclick="sq('Tengo una cita romántica esta noche')">Cita romántica</button>
     <button class="qbtn" onclick="sq('Necesito un perfume para la oficina')">Para la oficina</button>
-    <button class="qbtn" onclick="sq('Busco un regalo de perfume con presupuesto de 80 USD')">Para regalar</button>
-    <button class="qbtn" onclick="sq('Quiero algo para el gimnasio y fines de semana casual')">Gym y casual</button>
+    <button class="qbtn" onclick="sq('Busco un regalo de perfume con 80 USD')">Para regalar</button>
+    <button class="qbtn" onclick="sq('Quiero algo para el gimnasio y casual')">Gym y casual</button>
   </div>
 </div>
 
@@ -165,116 +151,170 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
     <textarea id="inp" placeholder="Cuéntame qué buscas o cómo te sientes hoy..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
     <button class="sbtn" id="sbtn" onclick="send()">➤</button>
   </div>
-  <div class="hint">Próximamente · Análisis por foto · Alertas de precio · Perfil acumulativo</div>
+  <div class="hint">Próximamente · Análisis por foto · Alertas de precio · Wishlist</div>
 </div>
 
 <script>
+const SUPABASE_URL = 'https://zdftewqlzulsjbfvpklt.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_N7ZBku1noylkIORSqwhmDw_zGpyAV4j';
+
+// ── FINGERPRINT ──
+function getFingerprint() {
+  const nav = window.navigator;
+  const raw = [
+    nav.userAgent, nav.language, nav.platform,
+    screen.width+'x'+screen.height, screen.colorDepth,
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+    nav.hardwareConcurrency||'',
+  ].join('|');
+  let hash = 0;
+  for(let i=0;i<raw.length;i++){hash=((hash<<5)-hash)+raw.charCodeAt(i);hash|=0;}
+  return 'fp_'+Math.abs(hash).toString(36);
+}
+const FINGERPRINT = getFingerprint();
+
 // ── WEATHER ──
-let weatherCtx = '';
+let weatherCtx = '', weatherSummary = '';
 async function getWeather() {
   try {
     const geo = await fetch('https://ipapi.co/json/');
     const gd = await geo.json();
-    const city = gd.city || 'tu ciudad';
-    const country = gd.country_name || '';
+    const city = gd.city||'tu ciudad', country = gd.country_name||'';
     const lat = gd.latitude, lon = gd.longitude;
-    const wr = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const wr = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m&timezone=auto`);
     const wd = await wr.json();
-    const temp = Math.round(wd.current_weather?.temperature ?? 0);
-    const code = wd.current_weather?.weathercode ?? 0;
-    const cond = code === 0 ? 'despejado' : code < 3 ? 'parcialmente nublado' : code < 60 ? 'nublado' : 'lluvia';
-    weatherCtx = `El usuario está en ${city}, ${country}. Temperatura actual: ${temp}°C, condición: ${cond}.`;
-    const icon = temp > 25 ? '☀️' : temp > 15 ? '🌤' : '🌧';
-    document.getElementById('weather-txt').textContent = `${city} · ${temp}°C ${icon}`;
+    const temp = Math.round(wd.current_weather?.temperature??0);
+    const humidity = wd.hourly?.relative_humidity_2m?.[0]??50;
+    const code = wd.current_weather?.weathercode??0;
+    const cond = code===0?'despejado':code<3?'parcialmente nublado':code<60?'nublado':'lluvia';
+    const hour = new Date().getHours();
+    const momento = hour<12?'mañana':hour<18?'tarde':'noche';
+    weatherCtx = `Ciudad: ${city}, ${country}. Temperatura: ${temp}°C. Humedad: ${humidity}%. Condición: ${cond}. Momento del día: ${momento}.
+Impacto en perfumería: ${temp>27?'Clima CALIENTE — recomendar frescos, acuáticos, cítricos ligeros. Evitar orientales pesados.':temp>20?'Clima TEMPLADO — funciona casi todo. Preferir moderados.':'Clima FRÍO — orientales, amaderados y especiados proyectan perfectamente. Evitar frescos muy ligeros.'}
+${humidity>70?'Humedad ALTA — los perfumes proyectan más, reducir cantidad aplicada. Evitar exceso de orientales pesados.':''}`;
+    weatherSummary = `${city} · ${temp}°C ${temp>25?'☀️':temp>15?'🌤':'🌧'}`;
+    document.getElementById('weather-txt').textContent = weatherSummary;
   } catch(e) {
     document.getElementById('weather-txt').textContent = 'Clima no disponible';
-    weatherCtx = '';
   }
 }
-getWeather();
+
+// ── USER MEMORY from Supabase ──
+let userMemory = null;
+async function loadUserMemory() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${FINGERPRINT}&select=*`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const users = await res.json();
+    if (users && users.length > 0) {
+      userMemory = users[0];
+      const pill = document.getElementById('user-pill');
+      const visits = document.getElementById('user-visits');
+      pill.style.display = 'flex';
+      visits.textContent = `Visita #${userMemory.visit_count + 1}`;
+    }
+  } catch(e) { console.log('Memory load failed:', e); }
+}
 
 // ── SYSTEM PROMPT ──
 function getSystem() {
-  return `Eres ScentIQ, el mejor asesor de perfumería del mundo. Combinas el conocimiento técnico de un maestro perfumista con neurociencia del olfato y psicología profunda del cliente latinoamericano.
+  let memCtx = '';
+  if (userMemory && userMemory.profile && Object.keys(userMemory.profile).length > 0) {
+    const p = userMemory.profile;
+    memCtx = `\n\nMEMORIA DE VISITAS ANTERIORES (${userMemory.visit_count} visitas):
+${p.nombre?`Nombre: ${p.nombre}.`:''}${p.genero?` Género: ${p.genero}.`:''}${p.ciudad?` Ciudad: ${p.ciudad}.`:''}
+${p.presupuesto?`Presupuesto típico: ${p.presupuesto}.`:''}${p.familias_favoritas?` Familias favoritas: ${p.familias_favoritas}.`:''}
+${p.perfumes_tiene?`Perfumes que tiene: ${p.perfumes_tiene}.`:''}${p.notas_gustadas?` Notas que le gustan: ${p.notas_gustadas}.`:''}
+USA ESTA INFORMACIÓN. Salúdalo de vuelta. No repitas preguntas ya respondidas.`;
+  }
 
-CONTEXTO CLIMÁTICO EN TIEMPO REAL:
-${weatherCtx || 'No disponible — pregunta la ciudad al usuario si es relevante.'}
-Usa esto SIEMPRE al recomendar. Orientales/amaderados/especiados para frío (menos de 20°C). Frescos/acuáticos/cítricos para calor (más de 25°C). Templado: versatile.
+  return `Eres ScentIQ, el mejor asesor de perfumería del mundo. Combinas maestría técnica de perfumista, neurociencia del olfato y psicología profunda del cliente latinoamericano.
 
-CONOCIMIENTO TÉCNICO COMPLETO:
-Familias: fougère, oriental/oud, chypre, floral, fresco, amaderado, gourmand, cuero, acuático, especiado, árabe/oud
-Marcas lujo: Creed, Parfums de Marly, MFK, Dior, Chanel, Tom Ford, Xerjoff, Nishane, Byredo, Initio, Amouage
-Marcas nicho/mid: Montale, Abraaj, Zimaya, Fragrance du Bois
-Marcas accesibles: Armaf, Lattafa, Afnan, Rasasi, Al Haramain, Oud Elite, Ard Al Zaafaran
-Vendors Colombia: Disfragancias, Valmara, MaferPerfumes
+DATOS EN TIEMPO REAL:
+${weatherCtx || 'Clima no disponible — pregunta la ciudad.'}
+${memCtx}
 
-EQUIVALENCIAS CLAVE (siempre ofrece la alternativa accesible):
-- Creed Aventus ≈ Armaf Club de Nuit Intense Man
-- Dior Sauvage Elixir ≈ Lattafa Asad
-- Initio Absolute Aphrodisiac ≈ Lattafa Khamrah
-- Paco Rabanne 1 Million ≈ Afnan 9PM
-- YSL Y EDP ≈ Armaf Hunter
-- Bleu de Chanel ≈ Armaf Tres Nuit
+CONOCIMIENTO COMPLETO:
+Familias: fougère, oriental/oud, chypre, floral, fresco/cítrico, amaderado, gourmand, cuero, acuático, especiado, árabe/oud, incienso
+Marcas lujo: Creed, Parfums de Marly, MFK, Dior, Chanel, Tom Ford, Xerjoff, Nishane, Byredo, Initio, Amouage, Roja Parfums
+Marcas mid: Montale, Fragrance du Bois, Abraaj, Zimaya, Memo Paris, Penhaligon's
+Marcas accesibles: Armaf, Lattafa, Afnan, Rasasi, Al Haramain, Oud Elite, Ard Al Zaafaran, Maison Alhambra
+Vendors Colombia: Disfragancias, Valmara, MaferPerfumes, Aromas y Perfumes
 
-REGLAS CRÍTICAS DE RECOMENDACIÓN:
-1. Si el usuario menciona perfumes árabes/orientales (Lattafa, Rasasi, Al Haramain, Oud, etc.) → recomendar PRIMERO dentro de ese universo. No saltar a Chanel o Dior sin justificación.
-2. Si el usuario tiene presupuesto bajo → no recomendar lujo primero
-3. Si el usuario tiene perfumes de lujo → puedes recomendar lujo
-4. Si el usuario menciona que le gusta el Asad (oriental/especiado/amaderado) → recomendar: Khamrah, Oud Mood, Al Haramain Amber Oud, Afnan Supremacy Noir, Lattafa Oud For Glory
-5. NUNCA recomendar algo de un universo completamente diferente al perfil sin explicarlo
-6. SIEMPRE tener en cuenta el clima actual para la recomendación
+EQUIVALENCIAS CLAVE:
+Creed Aventus ≈ Armaf Club de Nuit Intense Man (~$35)
+Dior Sauvage Elixir ≈ Lattafa Asad (~$25)
+Initio Absolute Aphrodisiac ≈ Lattafa Khamrah (~$30)
+Paco Rabanne 1 Million ≈ Afnan 9PM (~$20)
+YSL Y EDP ≈ Armaf Hunter (~$30)
+Bleu de Chanel EDP ≈ Armaf Tres Nuit (~$30)
+Parfums de Marly Layton ≈ Maison Alhambra Lathan (~$35)
+Xerjoff Erba Pura ≈ Lattafa Yara (~$25)
 
-METODOLOGÍA DE 2 FASES:
-FASE 1 — PERFIL BÁSICO: género, ciudad (ya lo tienes por clima), ocasiones, estilo, presupuesto, perfumes que ya tiene o le gustan
-FASE 2 — ADN EMOCIONAL:
-- ¿Qué olores de tu infancia o vida recuerdas con cariño?
-- ¿Cómo quieres que te recuerden cuando salgas de un lugar?
-- ¿Buscas evocar algo del pasado o crear identidad nueva?
+REGLAS CRÍTICAS:
+1. Si el usuario menciona Lattafa/Rasasi/Armaf/árabe/oud → recomendar DENTRO de ese universo primero
+2. Si le gusta Asad → recomendar: Khamrah, Oud Mood, Al Haramain Amber Oud, Lattafa Oud for Glory, Afnan Supremacy Noir
+3. Si presupuesto bajo (<$50) → NO recomendar lujo como primera opción
+4. SIEMPRE usar el clima actual para recomendar
+5. Humedad alta → advertir sobre proyección amplificada
+6. Hora del día → considerar en la recomendación (matutino vs nocturno)
+7. Tipo de piel si se menciona → grasa=más duración, seca=menos duración
 
-FORMATO DE RESPUESTA — MUY IMPORTANTE:
-Para texto normal: escribe naturalmente, sin símbolos raros ni corchetes.
-Para recomendaciones formales usa EXACTAMENTE este JSON al final:
+METODOLOGÍA:
+FASE 1 — Perfil rápido: género, ocasión, presupuesto, perfumes que ya tiene
+FASE 2 — ADN emocional: memorias olfativas, identidad deseada, cómo quiere ser recordado
+FASE 3 — Recomendación con imágenes
+
+FORMATO DE RECOMENDACIÓN — usa EXACTAMENTE este JSON:
 <RECS>
 [
   {
-    "nombre": "Nombre del perfume",
+    "nombre": "Nombre exacto del perfume",
     "casa": "Casa perfumista",
-    "match": "94%",
-    "notas": "Bergamota, pimienta → oud, rosa → sándalo, almizcle",
-    "emocion": "Frase corta sobre qué sensación o recuerdo evoca",
-    "tecnico": "Proyección alta · 8-10h · Ideal para clima frío",
-    "precio": "~$45 USD",
-    "vendor": "MaferPerfumes / Valmara"
+    "match": "95%",
+    "notas": "Bergamota, cardamomo → oud, rosa → sándalo, almizcle blanco",
+    "emocion": "Evoca noches cálidas de Dubái, presencia magnética e inconfundible",
+    "tecnico": "Proyección alta · Duración 10-12h · Ideal para clima frío",
+    "precio": "~$30 USD",
+    "vendor": "MaferPerfumes / Valmara",
+    "imagen_query": "Lattafa Khamrah perfume bottle"
   }
 ]
 </RECS>
 
-Habla siempre de forma cálida, cercana, como un amigo experto. SIEMPRE en español.`;
+El campo imagen_query es el texto exacto para buscar la imagen del frasco en Google.
+Habla cálido y cercano. SIEMPRE en español.`;
+}
+
+// ── GOOGLE IMAGE SEARCH ──
+async function fetchPerfumeImage(query) {
+  try {
+    const res = await fetch(`/api/image?q=${encodeURIComponent(query)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.imageUrl || null;
+  } catch(e) { return null; }
 }
 
 // ── STATE ──
-let msgs=[],profile={},busy=false;
+let msgs=[], profile={}, busy=false;
 
-// ── PROFILE ──
 function extractProfile(t) {
   const l=t.toLowerCase();
-  if(l.match(/\bsoy hombre\b|^hombre$|\bmasculin/))profile.genero='Hombre';
-  else if(l.match(/\bsoy mujer\b|^mujer$|\bfemenin/))profile.genero='Mujer';
-  if(l.includes('bogotá')||l.includes('bogota'))profile.ciudad='Bogotá';
-  else if(l.includes('medellín')||l.includes('medellin'))profile.ciudad='Medellín';
-  else if(l.includes('cali'))profile.ciudad='Cali';
-  else if(l.includes('barranquilla'))profile.ciudad='Barranquilla';
-  else if(l.includes('santa marta'))profile.ciudad='Santa Marta';
-  if(l.includes('oficina')||l.includes('trabajo')||l.includes('reunión'))profile.uso='Profesional';
-  else if(l.includes('cita')||l.includes('romántic')||l.includes('noche'))profile.uso='Nocturno';
-  else if(l.includes('casual')||l.includes('gym')||l.includes('gimnasio'))profile.uso='Casual';
+  if(l.match(/\bsoy hombre\b|\bmasculin/))profile.genero='Hombre';
+  else if(l.match(/\bsoy mujer\b|\bfemenin/))profile.genero='Mujer';
+  ['bogotá','bogota','medellín','medellin','cali','barranquilla','santa marta','cartagena'].forEach(c=>{
+    if(l.includes(c))profile.ciudad=c.charAt(0).toUpperCase()+c.slice(1);
+  });
+  if(l.includes('oficina')||l.includes('trabajo'))profile.uso='Profesional';
+  else if(l.includes('cita')||l.includes('romántic'))profile.uso='Nocturno';
+  else if(l.includes('casual')||l.includes('gym'))profile.uso='Casual';
   if(l.match(/\$\d+/)||l.includes('presupuesto'))profile.presupuesto='Indicado';
-  if(l.includes('lattafa')||l.includes('rasasi')||l.includes('armaf')||l.includes('árabe')||l.includes('oud'))profile.universo='Oriental/Árabe';
-  else if(l.includes('creed')||l.includes('marly')||l.includes('xerjoff'))profile.universo='Lujo occidental';
+  if(l.includes('lattafa')||l.includes('árabe')||l.includes('oud')||l.includes('rasasi'))profile.universo='Oriental/Árabe';
   renderProfile();
   if(msgs.length===2)setPhase(1);
   if(msgs.length>=4)setPhase(2);
-  if(l.includes('infancia')||l.includes('recuerdo')||l.includes('emoción'))setPhase(3);
 }
 
 function renderProfile(){
@@ -285,55 +325,55 @@ function renderProfile(){
   document.getElementById('ptags').innerHTML=keys.map(k=>`<span class="ptag">${lb[k]||k}: ${profile[k]}</span>`).join('');
 }
 
-const phases=['Inicio','Perfil básico','ADN emocional','Recomendando'];
 const progs=[0,33,66,100];
-function setPhase(i){
-  document.getElementById('prog').style.width=(progs[i]||100)+'%';
-}
+function setPhase(i){document.getElementById('prog').style.width=(progs[i]||100)+'%';}
 
-// ── RENDER ──
-function parseReply(t) {
+// ── RENDER RECS ──
+async function parseReply(t) {
   if (!t.includes('<RECS>')) return t.replace(/\n/g,'<br>');
-  const si = t.indexOf('<RECS>'), ei = t.indexOf('</RECS>');
-  const before = t.slice(0, si).replace(/\n/g,'<br>');
-  const after = ei > -1 ? t.slice(ei + 6).replace(/\n/g,'<br>') : '';
-  const jsonStr = t.slice(si + 6, ei > -1 ? ei : undefined).trim();
-  let recs = [];
-  try { recs = JSON.parse(jsonStr); } catch(e) { return t.replace(/\n/g,'<br>'); }
-  let html = before + '<div class="rec-section"><div class="rec-label">Recomendaciones personalizadas</div>';
-  recs.forEach(r => {
-    html += `<div class="rcard">
+  const si=t.indexOf('<RECS>'), ei=t.indexOf('</RECS>');
+  const before=t.slice(0,si).replace(/\n/g,'<br>');
+  const after=ei>-1?t.slice(ei+6).replace(/\n/g,'<br>'):'';
+  const jsonStr=t.slice(si+6,ei>-1?ei:undefined).trim();
+  let recs=[];
+  try{recs=JSON.parse(jsonStr);}catch(e){return t.replace(/\n/g,'<br>');}
+
+  let html=before+'<div class="rec-section"><div class="rec-label">Recomendaciones personalizadas para ti</div>';
+
+  for(const r of recs){
+    const imgUrl = r.imagen_query ? await fetchPerfumeImage(r.imagen_query) : null;
+    html+=`<div class="rcard">
+      ${imgUrl
+        ? `<img class="rcard-img" src="${imgUrl}" alt="${r.nombre}" onerror="this.style.display='none'">`
+        : `<div class="rcard-img-placeholder">🧴</div>`}
       <div class="rcard-top">
-        <div class="rcard-left">
+        <div>
           <div class="rcard-name">${r.nombre||''}</div>
           <div class="rcard-house">${r.casa||''}</div>
         </div>
-        <div class="rcard-match">
+        <div>
           <div class="rcard-pct">${r.match||''}</div>
-          <div class="rcard-pct-lbl">compatibilidad</div>
+          <div class="rcard-pct-lbl">match</div>
         </div>
       </div>
       <div class="rcard-body">
-        ${r.notas?`<div class="rcard-row"><span class="rcard-row-icon">🎵</span><div class="rcard-row-text">${r.notas}</div></div>`:''}
-        ${r.emocion?`<div class="rcard-row"><span class="rcard-row-icon">✨</span><div class="rcard-row-text emo">${r.emocion}</div></div>`:''}
-        ${r.tecnico?`<div class="rcard-row"><span class="rcard-row-icon">⚡</span><div class="rcard-row-text">${r.tecnico}</div></div>`:''}
-        <div class="rcard-price">
-          <div class="rcard-price-val">${r.precio||''}</div>
-          <div class="rcard-price-vendor">${r.vendor||''}</div>
-        </div>
+        ${r.notas?`<div class="rrow"><span class="rico">🎵</span><div class="rtxt">${r.notas}</div></div>`:''}
+        ${r.emocion?`<div class="rrow"><span class="rico">✨</span><div class="rtxt emo">${r.emocion}</div></div>`:''}
+        ${r.tecnico?`<div class="rrow"><span class="rico">⚡</span><div class="rtxt">${r.tecnico}</div></div>`:''}
+        <div class="rprice"><div class="rprice-val">${r.precio||''}</div><div class="rprice-vendor">${r.vendor||''}</div></div>
       </div>
     </div>`;
-  });
-  html += '</div>' + after;
+  }
+  html+='</div>'+after;
   return html;
 }
 
 function addMsg(role, html) {
-  const c = document.getElementById('chat');
-  const d = document.createElement('div');
-  d.className = 'msg ' + role;
-  d.innerHTML = `<div class="av ${role}">${role==='bot'?'◈':'Tú'}</div><div class="bub ${role}">${html}</div>`;
-  c.appendChild(d); c.scrollTop = c.scrollHeight;
+  const c=document.getElementById('chat');
+  const d=document.createElement('div');
+  d.className='msg '+role;
+  d.innerHTML=`<div class="av ${role}">${role==='bot'?'◈':'Tú'}</div><div class="bub ${role}">${html}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 
 function showTyping(){
@@ -345,22 +385,21 @@ function showTyping(){
 }
 function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 
-// ── API ──
 async function callAPI(text) {
   msgs.push({role:'user',content:text});
-  const res = await fetch('/api/chat', {
+  const res=await fetch('/api/chat',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:msgs, system:getSystem()})
+    body:JSON.stringify({messages:msgs,system:getSystem(),fingerprint:FINGERPRINT,userData:profile})
   });
-  if(!res.ok) throw new Error(res.status);
-  const data = await res.json();
-  const reply = data.reply || 'Sin respuesta.';
+  if(!res.ok)throw new Error(res.status);
+  const data=await res.json();
+  const reply=data.reply||'Sin respuesta.';
   msgs.push({role:'assistant',content:reply});
+  if(data.userProfile)userMemory=data.userProfile;
   return reply;
 }
 
-// ── SEND ──
 async function send() {
   const inp=document.getElementById('inp');
   const btn=document.getElementById('sbtn');
@@ -373,10 +412,12 @@ async function send() {
   extractProfile(text);
   showTyping();
   try {
-    const reply = await callAPI(text);
+    const reply=await callAPI(text);
     hideTyping();
-    addMsg('bot', parseReply(reply));
+    const html=await parseReply(reply);
+    addMsg('bot',html);
     extractProfile(reply);
+    setPhase(3);
   } catch(e) {
     hideTyping();
     addMsg('bot','Hubo un error de conexión. Por favor intenta de nuevo.');
@@ -390,9 +431,18 @@ function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 function ar(el){el.style.height='44px';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 
 // ── INIT ──
-setTimeout(()=>{
-  addMsg('bot','Bienvenido. Soy <strong>ScentIQ</strong>, tu asesor personal de perfumes.<br><br>Uso inteligencia real para encontrar el perfume que conecta con tu identidad, tu historia y cómo quieres ser recordado — y lo ajusto al clima de tu ciudad en tiempo real.<br><br>¿Qué estás buscando hoy?');
-},300);
+Promise.all([getWeather(), loadUserMemory()]).then(() => {
+  setTimeout(()=>{
+    const isReturn = userMemory && userMemory.visit_count > 0;
+    const visits = userMemory?.visit_count || 0;
+    const nombre = userMemory?.profile?.nombre || '';
+    if(isReturn && visits > 1) {
+      addMsg('bot',`¡Bienvenido de vuelta${nombre?' '+nombre:''}! 👋 Es tu visita #${visits+1} a <strong>ScentIQ</strong>.<br><br>Recuerdo tu perfil olfativo. ¿Qué estás buscando hoy? ¿Algo nuevo o continuamos donde lo dejamos?`);
+    } else {
+      addMsg('bot','Bienvenido. Soy <strong>ScentIQ</strong>, tu asesor personal de perfumes.<br><br>Uso inteligencia real para encontrar el perfume que conecta con tu identidad, tu historia y cómo quieres ser recordado — ajustado al clima de tu ciudad en tiempo real.<br><br>¿Qué estás buscando hoy?');
+    }
+  },400);
+});
 </script>
 </body>
 </html>
