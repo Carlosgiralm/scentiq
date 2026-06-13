@@ -455,15 +455,21 @@ function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 
 async function callAPI(text) {
   msgs.push({role: 'user', content: text});
+  
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ messages: msgs })
   });
+  
   if (!response.ok) throw new Error(response.status);
+  
   const data = await response.json();
-  // Esta línea busca el texto donde Anthropic lo entrega
-  const reply = data.content ? data.content[0].text : 'Sin respuesta.';
+  
+  // AQUÍ ESTÁ EL TRUCO: 
+  // Anthropic entrega el texto en data.content[0].text
+  const reply = (data.content && data.content[0]) ? data.content[0].text : 'Sin respuesta.';
+  
   msgs.push({role: 'assistant', content: reply});
   return reply;
 }
