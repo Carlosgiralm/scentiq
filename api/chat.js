@@ -1,34 +1,31 @@
 export default async function handler(req, res) {
-  // 1. Verificamos que sea POST
-  if (req.method !== 'POST') return res.status(405).end();
+  // Permitir solo POST
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Solo POST' });
 
   try {
-    // 2. FORZAMOS el cuerpo a ser un objeto simple para descartar errores de formato
-    const messages = req.body.messages;
-    
-    if (!messages) {
-       return res.status(400).json({ error: "No llegaron mensajes" });
-    }
+    // Anthropic requiere que el cuerpo tenga 'model', 'max_tokens' y 'messages'
+    const payload = {
+      model: "claude-3-5-sonnet-20240620",
+      max_tokens: 1024,
+      messages: req.body.messages
+    };
 
-    // 3. Llamada mínima a la API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01', // La versión de la API que Anthropic exige para /messages
+        'anthropic-version': '2023-06-01', // Cambiamos a la versión básica recomendada
         'content-type': 'application/json'
       },
-      body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20240620',
-        max_tokens: 1024,
-        messages: messages
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
-    return res.status(200).json(data);
+    
+    // Devolvemos exactamente lo que nos responde Anthropic
+    return res.status(response.status).json(data);
 
   } catch (err) {
-    return res.status(500).json({ error: "Error en el servidor: " + err.message });
+    return res.status(500).json({ error: err.message });
   }
 }
