@@ -1,39 +1,34 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: "API Key no configurada" });
-  }
+  // 1. Verificamos que sea POST
+  if (req.method !== 'POST') return res.status(405).end();
 
   try {
+    // 2. FORZAMOS el cuerpo a ser un objeto simple para descartar errores de formato
+    const messages = req.body.messages;
+    
+    if (!messages) {
+       return res.status(400).json({ error: "No llegaron mensajes" });
+    }
+
+    // 3. Llamada mínima a la API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2024-06-20',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01', // La versión de la API que Anthropic exige para /messages
         'content-type': 'application/json'
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20240620',
         max_tokens: 1024,
-        messages: Array.isArray(req.body.messages) ? req.body.messages : [{role: 'user', content: 'Hola'}]
+        messages: messages
       })
     });
 
     const data = await response.json();
-    
-    // Si la API responde con error, lo detectamos aquí
-    if (!response.ok) {
-       console.error("Error de Anthropic:", data);
-       return res.status(response.status).json(data);
-    }
-
     return res.status(200).json(data);
+
   } catch (err) {
-    console.error("Error en la ejecución:", err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: "Error en el servidor: " + err.message });
   }
 }
