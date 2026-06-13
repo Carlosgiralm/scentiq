@@ -519,7 +519,6 @@ async function send() {
   const reply = data.text || (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sin respuesta.';
   
   msgs.push({role: 'assistant', content: reply});
-  return reply;
 }
   
   if (!response.ok) throw new Error(response.status);
