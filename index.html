@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -6,164 +6,27 @@
 <title>ScentIQ — Asesor Personal de Perfumes</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+/* (Tu CSS permanece intacto) */
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f5f0e8;--bg2:#ede8de;--bg3:#e4ddd0;--bg4:#d8d0c0;
-  --gold:#8B6914;--gold2:#a07820;--gold3:#c9a84c;--gold-light:#f0e4c0;
-  --gold-border:rgba(139,105,20,0.18);--gold-border2:rgba(139,105,20,0.38);
-  --text:#2c2418;--text2:#6b5c40;--text3:#9d8e78;--text4:#c4b89e;
-  --bot-bg:#3D2F1A;--bot-text:#f0ece4;
-  --user-bg:#f0e4c0;--user-border:rgba(139,105,20,0.28);
-  --green:#5a8a5a;--r:12px;--r2:20px;--r3:28px;
-  --shadow:0 2px 10px rgba(44,36,24,0.07);
-  --shadow2:0 4px 18px rgba(44,36,24,0.11);
-  --shadow3:0 8px 32px rgba(44,36,24,0.14);
-}
+:root{--bg:#f5f0e8;--bg2:#ede8de;--bg3:#e4ddd0;--bg4:#d8d0c0;--gold:#8B6914;--gold2:#a07820;--gold3:#c9a84c;--gold-light:#f0e4c0;--gold-border:rgba(139,105,20,0.18);--gold-border2:rgba(139,105,20,0.38);--text:#2c2418;--text2:#6b5c40;--text3:#9d8e78;--text4:#c4b89e;--bot-bg:#3D2F1A;--bot-text:#f0ece4;--user-bg:#f0e4c0;--user-border:rgba(139,105,20,0.28);--green:#5a8a5a;--r:12px;--r2:20px;--r3:28px;--shadow:0 2px 10px rgba(44,36,24,0.07);--shadow2:0 4px 18px rgba(44,36,24,0.11);--shadow3:0 8px 32px rgba(44,36,24,0.14);}
 html,body{height:100%;background:var(--bg)}
-body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-direction:column;min-height:100vh;
-  background-image:
-    radial-gradient(ellipse 70% 50% at 15% 85%,rgba(139,105,20,0.07) 0%,transparent 55%),
-    radial-gradient(ellipse 50% 40% at 85% 15%,rgba(139,105,20,0.05) 0%,transparent 50%),
-    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(139,105,20,0.02) 0%,transparent 60%)}
-
-/* HEADER */
-.hdr{padding:1rem 2rem;border-bottom:1px solid var(--gold-border);display:flex;align-items:center;justify-content:space-between;
-  background:rgba(245,240,232,0.97);backdrop-filter:blur(24px);position:sticky;top:0;z-index:20;
-  box-shadow:0 1px 0 var(--gold-border),var(--shadow)}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold-border2);background:var(--bot-bg);
-  display:flex;align-items:center;justify-content:center;color:var(--gold3);
-  font-family:'Cormorant Garamond',serif;font-size:17px;box-shadow:0 2px 8px rgba(61,47,26,0.3)}
-.bname{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;letter-spacing:0.05em}
-.bname span{color:var(--gold)}
-.bsub{font-size:10px;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-top:1px}
-.hdr-right{display:flex;align-items:center;gap:8px}
-.weather-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);
-  padding:5px 13px;border-radius:20px;border:1px solid var(--gold-border);background:white;box-shadow:var(--shadow)}
-.wdot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green)}
-.user-pill{display:none;align-items:center;gap:6px;font-size:11px;color:var(--gold);
-  padding:5px 12px;border-radius:20px;border:1px solid var(--gold-border2);background:var(--gold-light);box-shadow:var(--shadow)}
-
-/* PROGRESS */
-.prog-bar{height:2px;background:var(--bg3)}
-.prog-fill{height:2px;background:linear-gradient(90deg,var(--gold),var(--gold3),#e8d090);width:0%;transition:width .6s ease}
-
-/* PROFILE BAR */
-.prof-bar{margin:.75rem 2rem 0;padding:11px 16px;border:1px solid var(--gold-border);border-radius:var(--r);
-  background:linear-gradient(135deg,var(--gold-light),#faf5e8);display:none;box-shadow:var(--shadow)}
-.prof-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
-.prof-tags{display:flex;flex-wrap:wrap;gap:6px}
-.ptag{font-size:11px;padding:3px 11px;border-radius:20px;border:1px solid var(--gold-border2);color:var(--gold);background:white;box-shadow:var(--shadow)}
-
-/* CHAT */
-.chat{flex:1;overflow-y:auto;padding:1.5rem 2rem;display:flex;flex-direction:column;gap:14px}
-.chat::-webkit-scrollbar{width:4px}
-.chat::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
-
-.msg{display:flex;gap:10px;align-items:flex-start;animation:fu .25s ease}
-.msg.user{flex-direction:row-reverse}
-@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
-.av.bot{background:var(--bot-bg);color:var(--gold3);font-family:'Cormorant Garamond',serif;font-size:17px;
-  box-shadow:0 2px 8px rgba(61,47,26,0.25)}
-.av.user{background:var(--gold-light);color:var(--gold);border:1.5px solid var(--gold-border2);font-size:10px;font-weight:500}
-
-.bub{padding:12px 16px;font-size:14px;line-height:1.8;border-radius:var(--r2)}
-.bub.bot{max-width:84%;background:var(--bot-bg);color:var(--bot-text);border-top-left-radius:4px;
-  box-shadow:var(--shadow2)}
-.bub.user{max-width:84%;background:var(--user-bg);color:var(--text);border:1px solid var(--user-border);
-  border-top-right-radius:4px;box-shadow:var(--shadow)}
-
-/* LINKS */
-.link-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.6);
-  border:1px solid var(--gold-border);border-radius:var(--r);margin-top:8px;text-decoration:none;
-  transition:all .18s;box-shadow:var(--shadow)}
-.link-card:hover{background:var(--gold-light);border-color:var(--gold-border2);transform:translateY(-1px);box-shadow:var(--shadow2)}
-.link-card-icon{font-size:18px}
-.link-card-info{flex:1}
-.link-card-name{font-size:13px;font-weight:500;color:var(--text)}
-.link-card-desc{font-size:11px;color:var(--text3);margin-top:1px}
-.link-card-arrow{font-size:11px;color:var(--text3)}
-
-/* REC CARDS */
-.rec-section{margin-top:14px;display:flex;flex-direction:column;gap:12px}
-.rec-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
-.rcard{background:white;border:1px solid var(--gold-border);border-radius:var(--r2);overflow:hidden;
-  box-shadow:var(--shadow2);transition:all .2s}
-.rcard:hover{box-shadow:var(--shadow3);border-color:var(--gold-border2);transform:translateY(-2px)}
-.rcard-img{width:100%;height:180px;object-fit:cover;display:block;background:var(--bg2)}
-.rcard-img-placeholder{width:100%;height:180px;background:linear-gradient(135deg,var(--bg2),var(--bg3));
-  display:flex;align-items:center;justify-content:center;font-size:48px}
-.rcard-top{padding:14px 18px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.rcard-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text);letter-spacing:.03em;line-height:1.2}
-.rcard-house{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
-.rcard-pct{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--gold);line-height:1;text-align:right}
-.rcard-pct-lbl{font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;text-align:right}
-.rcard-body{padding:0 18px 16px;display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--bg3);padding-top:12px}
-.rrow{display:flex;gap:8px;align-items:flex-start}
-.rico{font-size:13px;flex-shrink:0;margin-top:1px}
-.rtxt{font-size:13px;color:var(--text2);line-height:1.55}
-.rtxt.emo{color:var(--gold2);font-style:italic}
-.rprice{display:flex;justify-content:space-between;align-items:center;margin-top:8px;
-  padding:9px 14px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--bg3)}
-.rprice-val{font-size:14px;font-weight:500;color:var(--text)}
-.rprice-vendor{font-size:11px;color:var(--text3)}
-
-/* TYPING */
-.tdots{display:flex;gap:5px;align-items:center;padding:5px 0}
-.dot{width:5px;height:5px;border-radius:50%;background:rgba(240,228,192,0.5);animation:blink 1.3s infinite}
-.dot:nth-child(2){animation-delay:.22s}.dot:nth-child(3){animation-delay:.44s}
-@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-
-/* QUICK AREA */
-.quick-area{padding:.75rem 2rem 1rem}
-.quick-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
-
-/* FEATURED BUTTON */
-.qbtn-featured{width:100%;padding:16px 20px;border-radius:var(--r2);cursor:pointer;
-  background:linear-gradient(135deg,var(--bot-bg),#5C4020);
-  border:1px solid rgba(201,168,76,0.3);
-  display:flex;align-items:center;gap:14px;margin-bottom:12px;
-  box-shadow:var(--shadow2);transition:all .22s;text-align:left}
-.qbtn-featured:hover{transform:translateY(-2px);box-shadow:var(--shadow3);border-color:rgba(201,168,76,0.5)}
-.qbtn-featured .ficon{font-size:26px}
-.qbtn-featured .ftitle{font-size:15px;font-weight:600;color:var(--gold3);font-family:'Cormorant Garamond',serif;letter-spacing:0.03em}
-.qbtn-featured .fdesc{font-size:12px;color:rgba(240,236,228,0.65);margin-top:2px;line-height:1.4}
-
-/* GRID BUTTONS */
-.quick-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.qbtn{background:white;border:1px solid var(--gold-border);border-radius:var(--r2);padding:16px;
-  cursor:pointer;text-align:left;transition:all .2s;display:flex;flex-direction:column;gap:5px;
-  box-shadow:var(--shadow)}
-.qbtn:hover{transform:translateY(-2px);border-color:var(--gold-border2);box-shadow:var(--shadow2);background:var(--gold-light)}
-.qicon{font-size:22px}
-.qtitle{font-size:14px;font-weight:600;color:var(--text);font-family:'Inter',sans-serif}
-.qdesc{font-size:11px;color:var(--text3);line-height:1.4}
-
-/* INPUT */
-.inp-area{padding:.75rem 2rem 1.5rem;border-top:1px solid var(--gold-border);
-  background:rgba(245,240,232,0.98);box-shadow:0 -2px 14px rgba(44,36,24,0.07)}
-.inp-row{display:flex;gap:9px;align-items:flex-end}
-#inp{flex:1;padding:12px 18px;font-size:14px;border-radius:var(--r3);
-  border:1.5px solid var(--gold-border);background:white;color:var(--text);
-  resize:none;font-family:'Inter',sans-serif;line-height:1.55;height:46px;max-height:120px;
-  overflow:hidden;transition:border-color .22s;box-shadow:var(--shadow)}
-#inp::placeholder{color:var(--text4)}
-#inp:focus{outline:none;border-color:var(--gold-border2);box-shadow:0 0 0 3px rgba(139,105,20,0.08)}
-.sbtn{width:46px;height:46px;border-radius:50%;background:var(--bot-bg);border:none;cursor:pointer;
-  color:var(--gold3);font-size:16px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:opacity .18s,transform .12s;box-shadow:var(--shadow2)}
-.sbtn:hover{opacity:.85;transform:scale(1.06)}
-.sbtn:disabled{opacity:.3;cursor:default;transform:none}
-.hint{font-size:10px;color:var(--text4);margin-top:8px;text-align:center;letter-spacing:.05em}
-
-@media(max-width:600px){
-  .hdr,.chat,.quick-area,.inp-area,.prof-bar{padding-left:1rem;padding-right:1rem}
-  .prof-bar{margin-left:1rem;margin-right:1rem}
-  .quick-row{grid-template-columns:1fr}
-  .bub.bot,.bub.user{max-width:92%}
-}
+body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-direction:column;min-height:100vh;background-image:radial-gradient(ellipse 70% 50% at 15% 85%,rgba(139,105,20,0.07) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 85% 15%,rgba(139,105,20,0.05) 0%,transparent 50%),radial-gradient(ellipse 40% 30% at 50% 50%,rgba(139,105,20,0.02) 0%,transparent 60%)}
+.hdr{padding:1rem 2rem;border-bottom:1px solid var(--gold-border);display:flex;align-items:center;justify-content:space-between;background:rgba(245,240,232,0.97);backdrop-filter:blur(24px);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 var(--gold-border),var(--shadow)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold-border2);background:var(--bot-bg);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-family:'Cormorant Garamond',serif;font-size:17px;box-shadow:0 2px 8px rgba(61,47,26,0.3)}.bname{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;letter-spacing:0.05em}.bname span{color:var(--gold)}.bsub{font-size:10px;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-top:1px}.hdr-right{display:flex;align-items:center;gap:8px}.weather-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);padding:5px 13px;border-radius:20px;border:1px solid var(--gold-border);background:white;box-shadow:var(--shadow)}.wdot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green)}.user-pill{display:none;align-items:center;gap:6px;font-size:11px;color:var(--gold);padding:5px 12px;border-radius:20px;border:1px solid var(--gold-border2);background:var(--gold-light);box-shadow:var(--shadow)}
+.prog-bar{height:2px;background:var(--bg3)}.prog-fill{height:2px;background:linear-gradient(90deg,var(--gold),var(--gold3),#e8d090);width:0%;transition:width .6s ease}
+.prof-bar{margin:.75rem 2rem 0;padding:11px 16px;border:1px solid var(--gold-border);border-radius:var(--r);background:linear-gradient(135deg,var(--gold-light),#faf5e8);display:none;box-shadow:var(--shadow)}.prof-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}.prof-tags{display:flex;flex-wrap:wrap;gap:6px}.ptag{font-size:11px;padding:3px 11px;border-radius:20px;border:1px solid var(--gold-border2);color:var(--gold);background:white;box-shadow:var(--shadow)}
+.chat{flex:1;overflow-y:auto;padding:1.5rem 2rem;display:flex;flex-direction:column;gap:14px}.chat::-webkit-scrollbar{width:4px}.chat::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fu .25s ease}.msg.user{flex-direction:row-reverse}@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}.av.bot{background:var(--bot-bg);color:var(--gold3);font-family:'Cormorant Garamond',serif;font-size:17px;box-shadow:0 2px 8px rgba(61,47,26,0.25)}.av.user{background:var(--gold-light);color:var(--gold);border:1.5px solid var(--gold-border2);font-size:10px;font-weight:500}
+.bub{padding:12px 16px;font-size:14px;line-height:1.8;border-radius:var(--r2)}.bub.bot{max-width:84%;background:var(--bot-bg);color:var(--bot-text);border-top-left-radius:4px;box-shadow:var(--shadow2)}.bub.user{max-width:84%;background:var(--user-bg);color:var(--text);border:1px solid var(--user-border);border-top-right-radius:4px;box-shadow:var(--shadow)}
+.link-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.6);border:1px solid var(--gold-border);border-radius:var(--r);margin-top:8px;text-decoration:none;transition:all .18s;box-shadow:var(--shadow)}.link-card:hover{background:var(--gold-light);border-color:var(--gold-border2);transform:translateY(-1px);box-shadow:var(--shadow2)}.link-card-icon{font-size:18px}.link-card-info{flex:1}.link-card-name{font-size:13px;font-weight:500;color:var(--text)}.link-card-desc{font-size:11px;color:var(--text3);margin-top:1px}.link-card-arrow{font-size:11px;color:var(--text3)}
+.rec-section{margin-top:14px;display:flex;flex-direction:column;gap:12px}.rec-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}.rcard{background:white;border:1px solid var(--gold-border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow2);transition:all .2s}.rcard:hover{box-shadow:var(--shadow3);border-color:var(--gold-border2);transform:translateY(-2px)}.rcard-img{width:100%;height:180px;object-fit:cover;display:block;background:var(--bg2)}.rcard-img-placeholder{width:100%;height:180px;background:linear-gradient(135deg,var(--bg2),var(--bg3));display:flex;align-items:center;justify-content:center;font-size:48px}.rcard-top{padding:14px 18px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.rcard-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text);letter-spacing:.03em;line-height:1.2}.rcard-house{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}.rcard-pct{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--gold);line-height:1;text-align:right}.rcard-pct-lbl{font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;text-align:right}.rcard-body{padding:0 18px 16px;display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--bg3);padding-top:12px}.rrow{display:flex;gap:8px;align-items:flex-start}.rico{font-size:13px;flex-shrink:0;margin-top:1px}.rtxt{font-size:13px;color:var(--text2);line-height:1.55}.rtxt.emo{color:var(--gold2);font-style:italic}.rprice{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:9px 14px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--bg3)}.rprice-val{font-size:14px;font-weight:500;color:var(--text)}.rprice-vendor{font-size:11px;color:var(--text3)}
+.tdots{display:flex;gap:5px;align-items:center;padding:5px 0}.dot{width:5px;height:5px;border-radius:50%;background:rgba(240,228,192,0.5);animation:blink 1.3s infinite}.dot:nth-child(2){animation-delay:.22s}.dot:nth-child(3){animation-delay:.44s}@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.quick-area{padding:.75rem 2rem 1rem}.quick-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.qbtn-featured{width:100%;padding:16px 20px;border-radius:var(--r2);cursor:pointer;background:linear-gradient(135deg,var(--bot-bg),#5C4020);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;gap:14px;margin-bottom:12px;box-shadow:var(--shadow2);transition:all .22s;text-align:left}.qbtn-featured:hover{transform:translateY(-2px);box-shadow:var(--shadow3);border-color:rgba(201,168,76,0.5)}.qbtn-featured .ficon{font-size:26px}.qbtn-featured .ftitle{font-size:15px;font-weight:600;color:var(--gold3);font-family:'Cormorant Garamond',serif;letter-spacing:0.03em}.qbtn-featured .fdesc{font-size:12px;color:rgba(240,236,228,0.65);margin-top:2px;line-height:1.4}
+.quick-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.qbtn{background:white;border:1px solid var(--gold-border);border-radius:var(--r2);padding:16px;cursor:pointer;text-align:left;transition:all .2s;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow)}.qbtn:hover{transform:translateY(-2px);border-color:var(--gold-border2);box-shadow:var(--shadow2);background:var(--gold-light)}.qicon{font-size:22px}.qtitle{font-size:14px;font-weight:600;color:var(--text);font-family:'Inter',sans-serif}.qdesc{font-size:11px;color:var(--text3);line-height:1.4}
+.inp-area{padding:.75rem 2rem 1.5rem;border-top:1px solid var(--gold-border);background:rgba(245,240,232,0.98);box-shadow:0 -2px 14px rgba(44,36,24,0.07)}.inp-row{display:flex;gap:9px;align-items:flex-end}#inp{flex:1;padding:12px 18px;font-size:14px;border-radius:var(--r3);border:1.5px solid var(--gold-border);background:white;color:var(--text);resize:none;font-family:'Inter',sans-serif;line-height:1.55;height:46px;max-height:120px;overflow:hidden;transition:border-color .22s;box-shadow:var(--shadow)}#inp::placeholder{color:var(--text4)}#inp:focus{outline:none;border-color:var(--gold-border2);box-shadow:0 0 0 3px rgba(139,105,20,0.08)}.sbtn{width:46px;height:46px;border-radius:50%;background:var(--bot-bg);border:none;cursor:pointer;color:var(--gold3);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .18s,transform .12s;box-shadow:var(--shadow2)}.sbtn:hover{opacity:.85;transform:scale(1.06)}.sbtn:disabled{opacity:.3;cursor:default;transform:none}.hint{font-size:10px;color:var(--text4);margin-top:8px;text-align:center;letter-spacing:.05em}
+@media(max-width:600px){.hdr,.chat,.quick-area,.inp-area,.prof-bar{padding-left:1rem;padding-right:1rem}.prof-bar{margin-left:1rem;margin-right:1rem}.quick-row{grid-template-columns:1fr}.bub.bot,.bub.user{max-width:92%}}
 </style>
 </head>
 <body>
@@ -193,7 +56,6 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
 
 <div class="quick-area" id="quick-area">
   <div class="quick-lbl">¿Qué quieres hacer hoy?</div>
-
   <button class="qbtn-featured" onclick="sq('Recomiéndame qué perfume usar hoy según mi ubicación, el clima actual y el momento del día')">
     <div class="ficon">✨</div>
     <div>
@@ -201,28 +63,11 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
       <div class="fdesc">Basado en tu clima, ciudad y momento del día en tiempo real</div>
     </div>
   </button>
-
   <div class="quick-row">
-    <button class="qbtn" onclick="sq('Quiero que me recomienden un perfume personalizado')">
-      <div class="qicon">🧴</div>
-      <div class="qtitle">Recomendar perfume</div>
-      <div class="qdesc">Encuentra el tuyo según tu estilo y ocasión</div>
-    </button>
-    <button class="qbtn" onclick="sq('Quiero comparar dos perfumes')">
-      <div class="qicon">⚔️</div>
-      <div class="qtitle">Comparar perfumes</div>
-      <div class="qdesc">Diferencias reales entre dos fragancias</div>
-    </button>
-    <button class="qbtn" onclick="sq('Busco un perfume para regalar')">
-      <div class="qicon">🎁</div>
-      <div class="qtitle">Buscar un regalo</div>
-      <div class="qdesc">Recomendaciones seguras para sorprender</div>
-    </button>
-    <button class="qbtn" onclick="sq('Quiero aprender sobre perfumería desde cero')">
-      <div class="qicon">🎓</div>
-      <div class="qtitle">Aprender perfumería</div>
-      <div class="qdesc">Decants, familias olfativas y más</div>
-    </button>
+    <button class="qbtn" onclick="sq('Quiero que me recomienden un perfume personalizado')"><div class="qicon">🧴</div><div class="qtitle">Recomendar perfume</div><div class="qdesc">Encuentra el tuyo según tu estilo y ocasión</div></button>
+    <button class="qbtn" onclick="sq('Quiero comparar dos perfumes')"><div class="qicon">⚔️</div><div class="qtitle">Comparar perfumes</div><div class="qdesc">Diferencias reales entre dos fragancias</div></button>
+    <button class="qbtn" onclick="sq('Busco un perfume para regalar')"><div class="qicon">🎁</div><div class="qtitle">Buscar un regalo</div><div class="qdesc">Recomendaciones seguras para sorprender</div></button>
+    <button class="qbtn" onclick="sq('Quiero aprender sobre perfumería desde cero')"><div class="qicon">🎓</div><div class="qtitle">Aprender perfumería</div><div class="qdesc">Decants, familias olfativas y más</div></button>
   </div>
 </div>
 
@@ -231,346 +76,66 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
     <textarea id="inp" placeholder="Escribe aquí tu consulta..." onkeydown="hk(event)" oninput="ar(this)"></textarea>
     <button class="sbtn" id="sbtn" onclick="send()">➤</button>
   </div>
-  <div class="hint">+500 perfumes · Clima en tiempo real · Memoria personalizada · Próximamente: análisis por foto</div>
+  <div class="hint">+500 perfumes · Clima en tiempo real · Memoria personalizada</div>
 </div>
 
 <script>
 const SUPABASE_URL='https://zdftewqlzulsjbfvpklt.supabase.co';
 const SUPABASE_KEY='sb_publishable_N7ZBku1noylkIORSqwhmDw_zGpyAV4j';
-
-function getFingerprint(){
-  const raw=[navigator.userAgent,navigator.language,screen.width+'x'+screen.height,
-    Intl.DateTimeFormat().resolvedOptions().timeZone,navigator.hardwareConcurrency||''].join('|');
-  let h=0;for(let i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}
-  return'fp_'+Math.abs(h).toString(36);
-}
+function getFingerprint(){const raw=[navigator.userAgent,navigator.language,screen.width+'x'+screen.height,Intl.DateTimeFormat().resolvedOptions().timeZone,navigator.hardwareConcurrency||''].join('|');let h=0;for(let i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}return'fp_'+Math.abs(h).toString(36);}
 const FP=getFingerprint();
+let weatherCtx='',weatherCity='',userMemory=null,msgs=[],profile={},busy=false;
 
-let weatherCtx='',weatherCity='';
 async function getWeather(){
-  try{
-    const geo=await fetch('https://ipapi.co/json/');
-    const gd=await geo.json();
-    const city=gd.city||'tu ciudad',lat=gd.latitude,lon=gd.longitude;
-    weatherCity=city;
-    const wr=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m&timezone=auto`);
-    const wd=await wr.json();
-    const temp=Math.round(wd.current_weather?.temperature??0);
-    const hum=wd.hourly?.relative_humidity_2m?.[0]??50;
-    const code=wd.current_weather?.weathercode??0;
-    const cond=code===0?'despejado':code<3?'parcialmente nublado':code<60?'nublado':'lluvia';
-    const hour=new Date().getHours();
-    const momento=hour<6?'madrugada':hour<12?'mañana':hour<18?'tarde':'noche';
-    const consejo=temp>27?'Clima CALIENTE: recomendar frescos, cítricos, acuáticos. Evitar orientales pesados.'
-      :temp>20?'Clima TEMPLADO: versátil, casi todo funciona bien.'
-      :'Clima FRÍO: orientales, amaderados y especiados proyectan de forma excepcional.';
-    weatherCtx=`Ubicación: ${city}. Temperatura: ${temp}°C. Humedad: ${hum}%. Condición: ${cond}. Momento del día: ${momento}.\n${consejo}${hum>70?'\nHumedad alta: los perfumes proyectan más de lo normal, recomendar menos cantidad.':''}`;
-    document.getElementById('weather-txt').textContent=`${city} · ${temp}°C ${temp>25?'☀️':temp>15?'🌤':'🌧'}`;
-  }catch(e){document.getElementById('weather-txt').textContent='Clima no disponible';}
+  try{const geo=await fetch('https://ipapi.co/json/');const gd=await geo.json();const city=gd.city||'tu ciudad',lat=gd.latitude,lon=gd.longitude;weatherCity=city;const wr=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m&timezone=auto`);const wd=await wr.json();const temp=Math.round(wd.current_weather?.temperature??0);const hum=wd.hourly?.relative_humidity_2m?.[0]??50;const code=wd.current_weather?.weathercode??0;const cond=code===0?'despejado':code<3?'parcialmente nublado':code<60?'nublado':'lluvia';const hour=new Date().getHours();const momento=hour<6?'madrugada':hour<12?'mañana':hour<18?'tarde':'noche';const consejo=temp>27?'Clima CALIENTE: recomendar frescos, cítricos, acuáticos.':temp>20?'Clima TEMPLADO: versátil, casi todo funciona bien.':'Clima FRÍO: orientales, amaderados y especiados.';weatherCtx=`Ubicación: ${city}. Temperatura: ${temp}°C. Condición: ${cond}. Momento: ${momento}. ${consejo}`;document.getElementById('weather-txt').textContent=`${city} · ${temp}°C`;}catch(e){}
 }
-
-let userMemory=null;
 async function loadMemory(){
-  try{
-    const r=await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${FP}&select=*`,
-      {headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}});
-    const u=await r.json();
-    if(u&&u.length>0){
-      userMemory=u[0];
-      document.getElementById('user-visits').textContent=`Visita #${userMemory.visit_count+1}`;
-      document.getElementById('user-pill').style.display='flex';
-    }
-  }catch(e){}
+  try{const r=await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${FP}&select=*`,{headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}});const u=await r.json();if(u&&u.length>0){userMemory=u[0];document.getElementById('user-visits').textContent=`Visita #${userMemory.visit_count+1}`;document.getElementById('user-pill').style.display='flex';}}catch(e){}
 }
-
-function getSystem(){
-  let mem='';
-  if(userMemory?.profile&&Object.keys(userMemory.profile).length>0){
-    const p=userMemory.profile;
-    mem=`\n\nMEMORIA DE VISITAS ANTERIORES (${userMemory.visit_count} visitas):
-${p.nombre?`Nombre: ${p.nombre}.`:''} ${p.genero?`Género: ${p.genero}.`:''} ${p.ciudad?`Ciudad: ${p.ciudad}.`:''}
-${p.edad?`Edad: ${p.edad}.`:''} ${p.presupuesto?`Presupuesto: ${p.presupuesto}.`:''}
-${p.familias_favoritas?`Familias favoritas: ${p.familias_favoritas}.`:''}
-${p.perfumes_tiene?`Perfumes que ya tiene: ${p.perfumes_tiene}.`:''}
-Salúdalo de vuelta por nombre si lo tienes. NO repitas preguntas ya respondidas.`;
-  }
-
-  return`Eres ScentIQ, el mejor asesor de perfumería del mundo. Eres como un amigo experto: cálido, cercano, entusiasta y muy preciso. Combinas el conocimiento de un maestro perfumista con psicología profunda del cliente latinoamericano y neurociencia del olfato.
-
-DATOS EN TIEMPO REAL:
-${weatherCtx||'Clima no disponible.'}
-${mem}
-
-CONOCIMIENTO TÉCNICO:
-Familias: fougère, oriental/oud, chypre, floral, fresco/cítrico, amaderado, gourmand, cuero, acuático, especiado, árabe/oud
-Lujo: Creed, Parfums de Marly, MFK, Dior, Chanel, Tom Ford, Xerjoff, Nishane, Byredo, Initio, Amouage
-Mid: Montale, Abraaj, Zimaya, Memo Paris, Penhaligon's
-Accesibles: Armaf, Lattafa, Afnan, Rasasi, Al Haramain, Oud Elite, Maison Alhambra
-Colombia: Disfragancias (disfragancias.com), Gran Aroma (granaroma.com.co), Valmara, MaferPerfumes
-
-EQUIVALENCIAS:
-Creed Aventus ≈ Armaf Club de Nuit Intense (~$35)
-Dior Sauvage Elixir ≈ Lattafa Asad (~$25)
-Initio Absolute Aphrodisiac ≈ Lattafa Khamrah (~$30)
-Paco Rabanne 1 Million ≈ Afnan 9PM (~$20)
-Parfums de Marly Layton ≈ Maison Alhambra Lathan (~$35)
-Xerjoff Erba Pura ≈ Lattafa Yara (~$25)
-
-REGLAS CRÍTICAS:
-1. Usuario menciona Lattafa/Rasasi/Armaf/árabe/oud → recomendar DENTRO de ese universo primero
-2. Si le gusta Asad → recomendar: Khamrah, Oud Mood, Al Haramain Amber Oud, Lattafa Oud for Glory
-3. Presupuesto bajo (<$50) → opciones accesibles primero
-4. SIEMPRE usa el clima actual en la recomendación
-5. NUNCA uses markdown: sin ##, sin **, sin ---, sin tablas con |
-6. Respuestas moderadas y conversacionales
-
-SOBRE "RECOMIÉNDAME QUÉ USAR HOY":
-Cuando el usuario pide esto, responde directamente con 1-2 recomendaciones basadas en:
-- El clima actual (temperatura, humedad, condición)
-- El momento del día (mañana, tarde, noche)
-- Si tienes memoria del usuario, su perfil y lo que ya tiene
-Si no tienes perfil del usuario, haz 2 preguntas rápidas (género y si tiene perfumes) antes de recomendar.
-
-FLUJO DE CONVERSACIÓN NORMAL:
-Cuando el usuario escribe por primera vez → responder brevemente y preguntar: "Para orientarte de la mejor forma, déjame conocerte un poco. ¿Eres hombre o mujer?"
-Luego → "¿En qué rango de edad estás? a) 18-25  b) 26-35  c) 36-45  d) 46+"
-Luego → "¿Cuánto estarías dispuesto a invertir? a) Menos de $50 USD  b) $50-$150 USD  c) Más de $150 USD"
-Luego → "¿Para qué momentos lo usarías? a) Trabajo  b) Salidas y citas  c) Diario  d) Todos"
-Luego → "¿Ya tienes perfumes o estás empezando desde cero?"
-  Si principiante: explicar decants (muestra de 5-10ml del perfume original, precio $5-$20 USD, disponible en Disfragancias y Gran Aroma — forma perfecta de probar antes de comprar el frasco completo)
-  Si ya tiene: preguntar qué tiene y qué le gusta
-Luego → 1-2 preguntas emocionales: qué olores recuerda con cariño, cómo quiere ser recordado
-Luego → Recomendar
-
-LINKS (usa cuando sea relevante):
-[LINK]{"url":"https://disfragancias.com","nombre":"Disfragancias","desc":"Amplio catálogo · Decants disponibles · Envío a toda Colombia"}[/LINK]
-[LINK]{"url":"https://granaroma.com.co","nombre":"Gran Aroma","desc":"Especialistas en nicho y lujo · Decants y frascos completos"}[/LINK]
-
-FORMATO RECOMENDACIÓN:
-<RECS>
-[{"nombre":"Nombre","casa":"Casa","match":"94%","notas":"top → corazón → fondo","emocion":"frase emotiva breve","tecnico":"Proyección · Duración · Clima ideal","precio":"~$XX USD","vendor":"Vendor Colombia","imagen_query":"nombre perfume bottle official"}]
-</RECS>
-
-SIEMPRE en español. Cálido y cercano.`;
-}
-
-let msgs=[],profile={},busy=false;
-
-function extractProfile(t){
-  const l=t.toLowerCase();
-  if(l.match(/\bsoy hombre\b|\bhombre\b|\bmasculin/))profile.genero='Hombre';
-  else if(l.match(/\bsoy mujer\b|\bmujer\b|\bfemenin/))profile.genero='Mujer';
-  ['bogotá','bogota','medellín','medellin','cali','barranquilla','santa marta','cartagena'].forEach(c=>{
-    if(l.includes(c))profile.ciudad=c.charAt(0).toUpperCase()+c.slice(1);
-  });
-  if(l.includes('18-25'))profile.edad='18-25';
-  else if(l.includes('26-35'))profile.edad='26-35';
-  else if(l.includes('36-45'))profile.edad='36-45';
-  else if(l.includes('46'))profile.edad='46+';
-  if(l.includes('oficina')||l.includes('trabajo'))profile.uso='Profesional';
-  else if(l.includes('cita')||l.includes('romántic')||l.includes('noche'))profile.uso='Nocturno';
-  else if(l.includes('casual')||l.includes('gym'))profile.uso='Casual';
-  if(l.includes('lattafa')||l.includes('árabe')||l.includes('oud')||l.includes('rasasi'))profile.universo='Oriental/Árabe';
-  renderProfile();
-  if(msgs.length===2)setPhase(1);
-  if(msgs.length>=4)setPhase(2);
-  if(msgs.length>=7)setPhase(3);
-}
-
-function renderProfile(){
-  const keys=Object.keys(profile);
-  if(!keys.length)return;
-  document.getElementById('prof-bar').style.display='block';
-  const lb={genero:'Género',ciudad:'Ciudad',edad:'Edad',uso:'Ocasión',presupuesto:'Presupuesto',universo:'Universo'};
-  document.getElementById('ptags').innerHTML=keys.map(k=>`<span class="ptag">${lb[k]||k}: ${profile[k]}</span>`).join('');
-}
-
+function extractProfile(t){const l=t.toLowerCase();if(l.match(/\bsoy hombre\b|\bhombre\b|\bmasculin/))profile.genero='Hombre';else if(l.match(/\bsoy mujer\b|\bmujer\b|\bfemenin/))profile.genero='Mujer';renderProfile();}
+function renderProfile(){const keys=Object.keys(profile);if(!keys.length)return;document.getElementById('prof-bar').style.display='block';document.getElementById('ptags').innerHTML=keys.map(k=>`<span class="ptag">${k}: ${profile[k]}</span>`).join('');}
 function setPhase(i){document.getElementById('prog').style.width=[0,25,60,100][Math.min(i,3)]+'%';}
-
-function renderText(t){
-  t=t.replace(/\[LINK\](.*?)\[\/LINK\]/gs,(m,json)=>{
-    try{const d=JSON.parse(json);
-      return`<a href="${d.url}" target="_blank" class="link-card"><span class="link-card-icon">🛍️</span><div class="link-card-info"><div class="link-card-name">${d.nombre}</div><div class="link-card-desc">${d.desc}</div></div><span class="link-card-arrow">↗</span></a>`;
-    }catch(e){return'';}
-  });
-  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  t=t.replace(/#{1,3}\s?(.*)/g,'<strong>$1</strong>');
-  t=t.replace(/---/g,'');
-  t=t.replace(/\n/g,'<br>');
-  return t;
-}
-
-async function parseReply(t){
-  if(!t.includes('<RECS>'))return renderText(t);
-  const si=t.indexOf('<RECS>'),ei=t.indexOf('</RECS>');
-  const before=renderText(t.slice(0,si));
-  const after=ei>-1?renderText(t.slice(ei+6)):'';
-  let recs=[];
-  try{recs=JSON.parse(t.slice(si+6,ei>-1?ei:undefined).trim());}catch(e){return renderText(t);}
-  let html=before+'<div class="rec-section"><div class="rec-label">Recomendaciones personalizadas para ti</div>';
-  for(const r of recs){
-    const imgUrl=r.imagen_query?await fetchImage(r.imagen_query):null;
-    html+=`<div class="rcard">
-      ${imgUrl?`<img class="rcard-img" src="${imgUrl}" alt="${r.nombre}" onerror="this.style.display='none'">`:`<div class="rcard-img-placeholder">🧴</div>`}
-      <div class="rcard-top">
-        <div><div class="rcard-name">${r.nombre}</div><div class="rcard-house">${r.casa}</div></div>
-        <div><div class="rcard-pct">${r.match}</div><div class="rcard-pct-lbl">match</div></div>
-      </div>
-      <div class="rcard-body">
-        ${r.notas?`<div class="rrow"><span class="rico">🎵</span><div class="rtxt">${r.notas}</div></div>`:''}
-        ${r.emocion?`<div class="rrow"><span class="rico">✨</span><div class="rtxt emo">${r.emocion}</div></div>`:''}
-        ${r.tecnico?`<div class="rrow"><span class="rico">⚡</span><div class="rtxt">${r.tecnico}</div></div>`:''}
-        <div class="rprice"><div class="rprice-val">${r.precio}</div><div class="rprice-vendor">${r.vendor}</div></div>
-      </div>
-    </div>`;
-  }
-  return html+'</div>'+after;
-}
-
-async function fetchImage(q){
-  try{
-    const r=await fetch(`/api/image?q=${encodeURIComponent(q)}`);
-    if(!r.ok)return null;
-    const d=await r.json();
-    return d.imageUrl||null;
-  }catch(e){return null;}
-}
-
-function addMsg(role,html){
-  const c=document.getElementById('chat');
-  const d=document.createElement('div');
-  d.className='msg '+role;
-  d.innerHTML=`<div class="av ${role}">${role==='bot'?'◈':'Tú'}</div><div class="bub ${role}">${html}</div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-
-function showTyping(){
-  const c=document.getElementById('chat');
-  const d=document.createElement('div');
-  d.id='typ';d.className='msg bot';
-  d.innerHTML=`<div class="av bot">◈</div><div class="bub bot"><div class="tdots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
-
-// Asegúrate de que callAPI esté correctamente definida como async
+function renderText(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
+async function parseReply(t){return renderText(t);}
 async function callAPI(text) {
   msgs.push({role: 'user', content: text});
-  
-  const response = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: msgs })
-  });
-  
+  const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: msgs }) });
   if (!response.ok) throw new Error(response.status);
-  
   const data = await response.json();
-  
-  // LOG DE DIAGNÓSTICO: Esto aparecerá en tu consola del navegador
-  console.log("Respuesta completa del backend:", data);
-  
-  // Ajuste según estructura esperada
-  const reply = data.text || (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sin respuesta.';
-  
+  const reply = data.text || (data.content && data.content[0] && data.content[0].text) || 'Sin respuesta.';
   msgs.push({role: 'assistant', content: reply});
   return reply;
 }
-
-// Asegúrate de que send() sea ASYNC
 async function send() {
   const inp = document.getElementById('inp');
   const btn = document.getElementById('sbtn');
   const text = inp.value.trim();
   if (!text || busy) return;
-  
-  inp.value = ''; 
-  inp.style.height = '46px';
-  document.getElementById('quick-area').style.display = 'none';
-  busy = true; 
-  btn.disabled = true;
-  
+  inp.value = ''; inp.style.height = '46px'; document.getElementById('quick-area').style.display = 'none';
+  busy = true; btn.disabled = true;
   addMsg('user', text.replace(/\n/g, '<br>'));
-  extractProfile(text); 
-  showTyping();
-  
+  extractProfile(text); showTyping();
   try {
-    // Ahora que send es async, este await funcionará
     const reply = await callAPI(text);
     hideTyping();
-    const html = await parseReply(reply);
-    addMsg('bot', html);
+    addMsg('bot', await parseReply(reply));
     extractProfile(reply);
-    setPhase(Math.floor(msgs.length/2));
   } catch (e) {
     hideTyping();
-    addMsg('bot', 'Hubo un error de conexión. Por favor intenta de nuevo.');
-    console.error(e);
+    addMsg('bot', 'Error de conexión.');
   }
-  busy = false; 
-  btn.disabled = false; 
-  inp.focus();
+  busy = false; btn.disabled = false; inp.focus();
 }
-  
-  // LOG DE DIAGNÓSTICO
-  console.log("Respuesta completa del backend:", data);
-  
-  // Intentamos varias formas comunes en las que las APIs devuelven texto
-  const reply = data.text || (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sin respuesta.';
-  
-  msgs.push({role: 'assistant', content: reply});
-}
-  
-  if (!response.ok) throw new Error(response.status);
-  
-  const data = await response.json();
-  
-  // AQUÍ ESTÁ EL TRUCO: 
-  // Anthropic entrega el texto en data.content[0].text
-  const reply = (data.content && data.content[0]) ? data.content[0].text : 'Sin respuesta.';
-  
-  msgs.push({role: 'assistant', content: reply});
-  return reply;
-}
-
-async function send(){
-  const inp=document.getElementById('inp');
-  const btn=document.getElementById('sbtn');
-  const text=inp.value.trim();
-  if(!text||busy)return;
-  inp.value='';inp.style.height='46px';
-  document.getElementById('quick-area').style.display='none';
-  busy=true;btn.disabled=true;
-  addMsg('user',text.replace(/\n/g,'<br>'));
-  extractProfile(text);showTyping();
-  try{
-    const reply=await callAPI(text);
-    hideTyping();
-    const html=await parseReply(reply);
-    addMsg('bot',html);
-    extractProfile(reply);
-    setPhase(Math.floor(msgs.length/2));
-  }catch(e){
-    hideTyping();
-    addMsg('bot','Hubo un error de conexión. Por favor intenta de nuevo.');
-    console.error(e);
-  }
-  busy=false;btn.disabled=false;inp.focus();
-}
-
+function addMsg(role,html){const c=document.getElementById('chat');const d=document.createElement('div');d.className='msg '+role;d.innerHTML=`<div class="av ${role}">${role==='bot'?'◈':'Tú'}</div><div class="bub ${role}">${html}</div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function showTyping(){const c=document.getElementById('chat');const d=document.createElement('div');d.id='typ';d.className='msg bot';d.innerHTML=`<div class="av bot">◈</div><div class="bub bot">...</div>`;c.appendChild(d);}
+function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 function sq(t){document.getElementById('inp').value=t;send();}
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 function ar(el){el.style.height='46px';el.style.height=Math.min(el.scrollHeight,120)+'px';}
-
 Promise.all([getWeather(),loadMemory()]).then(()=>{
   setTimeout(()=>{
     const isReturn=userMemory&&userMemory.visit_count>1;
-    const nombre=userMemory?.profile?.nombre||'';
-    if(isReturn){
-      addMsg('bot',`¡Bienvenido de vuelta${nombre?' '+nombre:''}! 👋 Es tu visita #${userMemory.visit_count+1} a ScentIQ.<br><br>Recuerdo tu perfil olfativo. ¿Buscamos algo nuevo hoy o continuamos donde lo dejamos?`);
-    }else{
-      addMsg('bot','Bienvenido. Soy <strong>ScentIQ</strong>, tu asesor personal de perfumes. 🌿<br><br>Uso inteligencia real para encontrar el perfume que conecta con tu identidad, tu historia y cómo quieres ser recordado — ajustado a tu ubicación y a la actividad que quieres hacer.<br><br>Dime, ¿cómo puedo orientarte hoy?');
-    }
+    addMsg('bot', isReturn ? '¡Bienvenido de vuelta! ¿En qué seguimos hoy?' : 'Bienvenido. Soy ScentIQ, tu asesor personal de perfumes. ¿Cómo puedo orientarte hoy?');
   },350);
 });
 </script>
