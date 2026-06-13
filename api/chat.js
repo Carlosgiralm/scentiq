@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // 1. Validar que sea un POST
+  // 1. Validar que sea un método POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -14,7 +14,8 @@ export default async function handler(req, res) {
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
   if (!SUPABASE_KEY || !ANTHROPIC_KEY) {
-    return res.status(500).json({ error: 'Faltan variables de entorno' });
+    console.error('Faltan variables de entorno');
+    return res.status(500).json({ error: 'Server configuration error' });
   }
 
   try {
@@ -26,25 +27,28 @@ export default async function handler(req, res) {
         const findUser = await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}&select=*`, {
           headers: { 
             'apikey': SUPABASE_KEY, 
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json' 
+            'Authorization': `Bearer ${SUPABASE_KEY}` 
           }
         });
         const users = await findUser.json();
         
         if (users && users.length > 0) {
           userProfile = users[0];
+          // Actualizar última visita
           await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}`, {
             method: 'PATCH',
             headers: { 
               'apikey': SUPABASE_KEY, 
               'Authorization': `Bearer ${SUPABASE_KEY}`, 
-              'Content-Type': 'application/json',
-              'Prefer': 'return=representation'
+              'Content-Type': 'application/json' 
             },
-            body: JSON.stringify({ last_seen: new Date().toISOString(), visit_count: (userProfile.visit_count || 0) + 1 })
+            body: JSON.stringify({ 
+              last_seen: new Date().toISOString(), 
+              visit_count: (userProfile.visit_count || 0) + 1 
+            })
           });
         } else {
+          // Crear nuevo usuario
           const createUser = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
             method: 'POST',
             headers: { 
@@ -69,14 +73,14 @@ export default async function handler(req, res) {
       }
     }
 
-    // 3. Preparar contexto para Claude
+    // 3. Preparar contexto mejorado
     let enhancedSystem = system || '';
     if (userProfile?.profile) {
       const p = userProfile.profile;
       enhancedSystem += `\n\nMEMORIA: Usuario visitó ${userProfile.visit_count || 1} veces. ${p.nombre ? `Nombre: ${p.nombre}.` : ''} ${p.ciudad ? `Ciudad: ${p.ciudad}.` : ''} Usa esto para personalizar.`;
     }
 
-    // 4. Llamar a Claude
+    // 4. Llamar a Claude API (MODELO CORREGIDO)
     const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 
@@ -85,7 +89,7 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01' 
       },
       body: JSON.stringify({ 
-        model: 'claude-3-5-sonnet-20241022', 
+        model: 'claude-3-5-sonnet-latest', 
         max_tokens: 1500, 
         system: enhancedSystem, 
         messages 
@@ -94,7 +98,8 @@ export default async function handler(req, res) {
 
     if (!claudeRes.ok) {
       const err = await claudeRes.text();
-      return res.status(500).json({ error: 'Error en Claude', detail: err });
+      console.error('Anthropic API error:', err);
+      return res.status(500).json({ error: 'Anthropic API error', detail: err });
     }
 
     const claudeData = await claudeRes.json();
@@ -103,7 +108,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply });
 
   } catch (error) {
-    console.error('Error General:', error);
-    return res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Server error:', error);
+    return res.status(500).json({ error: 'Internal server error', detail: error.message });
   }
 }
