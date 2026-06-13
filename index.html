@@ -453,17 +453,18 @@ function showTyping(){
 }
 function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 
-async function callAPI(text){
-  msgs.push({role:'user',content:text});
-  const r=await fetch('/api/chat',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:msgs,system:getSystem(),fingerprint:FP,userData:profile})
+async function callAPI(text) {
+  msgs.push({role: 'user', content: text});
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: msgs })
   });
-  if(!r.ok)throw new Error(r.status);
-  const d=await r.json();
-  const reply=d.reply||'Sin respuesta.';
-  msgs.push({role:'assistant',content:reply});
-  if(d.userProfile)userMemory=d.userProfile;
+  if (!response.ok) throw new Error(response.status);
+  const data = await response.json();
+  // Esta línea busca el texto donde Anthropic lo entrega
+  const reply = data.content ? data.content[0].text : 'Sin respuesta.';
+  msgs.push({role: 'assistant', content: reply});
   return reply;
 }
 
