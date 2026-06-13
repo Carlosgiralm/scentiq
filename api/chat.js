@@ -6,7 +6,8 @@ export default async function handler(req, res) {
     const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
     if (!ANTHROPIC_KEY) {
-      return res.status(500).json({ error: 'Falta ANTHROPIC_API_KEY en Vercel' });
+      console.error("Falta la variable de entorno ANTHROPIC_API_KEY");
+      return res.status(500).json({ error: 'Configuración faltante' });
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307', // Cambiado a Haiku por compatibilidad
+        model: 'claude-3-haiku-20240307', // Modelo altamente compatible
         max_tokens: 1024,
         messages: messages
       })
@@ -26,14 +27,14 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Error desde Claude:", data);
-      return res.status(500).json({ error: 'Error en API de Anthropic', detail: data.error.message });
+      console.error("Error desde Claude:", JSON.stringify(data));
+      return res.status(500).json({ error: 'Error en la API de Claude', detail: data });
     }
 
     return res.status(200).json({ reply: data.content[0].text });
 
   } catch (error) {
     console.error("Error en servidor:", error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: 'Error interno del servidor', detail: error.message });
   }
 }
