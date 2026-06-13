@@ -453,6 +453,7 @@ function showTyping(){
 }
 function hideTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 
+// Asegúrate de que callAPI esté correctamente definida como async
 async function callAPI(text) {
   msgs.push({role: 'user', content: text});
   
@@ -465,6 +466,51 @@ async function callAPI(text) {
   if (!response.ok) throw new Error(response.status);
   
   const data = await response.json();
+  
+  // LOG DE DIAGNÓSTICO: Esto aparecerá en tu consola del navegador
+  console.log("Respuesta completa del backend:", data);
+  
+  // Ajuste según estructura esperada
+  const reply = data.text || (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sin respuesta.';
+  
+  msgs.push({role: 'assistant', content: reply});
+  return reply;
+}
+
+// Asegúrate de que send() sea ASYNC
+async function send() {
+  const inp = document.getElementById('inp');
+  const btn = document.getElementById('sbtn');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  
+  inp.value = ''; 
+  inp.style.height = '46px';
+  document.getElementById('quick-area').style.display = 'none';
+  busy = true; 
+  btn.disabled = true;
+  
+  addMsg('user', text.replace(/\n/g, '<br>'));
+  extractProfile(text); 
+  showTyping();
+  
+  try {
+    // Ahora que send es async, este await funcionará
+    const reply = await callAPI(text);
+    hideTyping();
+    const html = await parseReply(reply);
+    addMsg('bot', html);
+    extractProfile(reply);
+    setPhase(Math.floor(msgs.length/2));
+  } catch (e) {
+    hideTyping();
+    addMsg('bot', 'Hubo un error de conexión. Por favor intenta de nuevo.');
+    console.error(e);
+  }
+  busy = false; 
+  btn.disabled = false; 
+  inp.focus();
+}
   
   // LOG DE DIAGNÓSTICO
   console.log("Respuesta completa del backend:", data);
