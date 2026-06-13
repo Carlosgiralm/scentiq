@@ -53,11 +53,16 @@ ${p.notas_no_gustadas ? `Notas que NO le gustan: ${p.notas_no_gustadas}.` : ''}
 USA ESTA INFORMACIÓN para personalizar la conversación. Salúdalo como si lo conocieras. No repitas preguntas que ya respondió antes.`;
     }
 
-    // 3. Call Claude API
+    // 3. Call Claude API (MODELO CORREGIDO AQUÍ)
     const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, system: enhancedSystem, messages })
+      body: JSON.stringify({ 
+        model: 'claude-3-5-sonnet-20241022', // <--- Nombre oficial corregido
+        max_tokens: 1500, 
+        system: enhancedSystem, 
+        messages 
+      })
     });
 
     if (!claudeRes.ok) {
