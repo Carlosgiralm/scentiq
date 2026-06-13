@@ -466,6 +466,20 @@ async function callAPI(text) {
   
   const data = await response.json();
   
+  // LOG DE DIAGNÓSTICO
+  console.log("Respuesta completa del backend:", data);
+  
+  // Intentamos varias formas comunes en las que las APIs devuelven texto
+  const reply = data.text || (data.content && data.content[0] && data.content[0].text) || data.reply || 'Sin respuesta.';
+  
+  msgs.push({role: 'assistant', content: reply});
+  return reply;
+}
+  
+  if (!response.ok) throw new Error(response.status);
+  
+  const data = await response.json();
+  
   // AQUÍ ESTÁ EL TRUCO: 
   // Anthropic entrega el texto en data.content[0].text
   const reply = (data.content && data.content[0]) ? data.content[0].text : 'Sin respuesta.';
