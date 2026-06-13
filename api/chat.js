@@ -21,11 +21,10 @@ export default async function handler(req, res) {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20240620',
-        max_tokens: 1024,
-        messages: req.body.messages
-      })
-    });
+  model: 'claude-3-5-sonnet-20240620',
+  max_tokens: 1024,
+  messages: Array.isArray(req.body.messages) ? req.body.messages : [{role: 'user', content: 'Hola'}]
+})
 
     const data = await response.json();
     return res.status(200).json(data);
