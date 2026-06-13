@@ -8,40 +8,59 @@ export default async function handler(req, res) {
   const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
+  // Validación de seguridad para llaves vacías
+  if (!SUPABASE_KEY || !ANTHROPIC_KEY) {
+    console.error('Faltan variables de entorno en Vercel (SUPABASE_SECRET_KEY o ANTHROPIC_API_KEY)');
+    return res.status(500).json({ error: 'Server configuration error' });
+  }
+
   try {
     // 1. Get or create user profile by fingerprint
     let userProfile = null;
     if (fingerprint) {
-      const findUser = await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}&select=*`, {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-      });
-      const users = await findUser.json();
-      if (users && users.length > 0) {
-        userProfile = users[0];
-        // Update last_seen
-        await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}`, {
-          method: 'PATCH',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ last_seen: new Date().toISOString(), visit_count: (userProfile.visit_count || 0) + 1 })
+      try {
+        const findUser = await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}&select=*`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
-      } else {
-        // Create new user
-        const createUser = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
-          method: 'POST',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-          body: JSON.stringify({ fingerprint, profile: userData || {}, visit_count: 1, created_at: new Date().toISOString(), last_seen: new Date().toISOString() })
-        });
-        const newUsers = await createUser.json();
-        userProfile = newUsers[0] || null;
+        const users = await findUser.json();
+        
+        if (users && users.length > 0) {
+          userProfile = users[0];
+          // Update last_seen
+          await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}`, {
+            method: 'PATCH',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ last_seen: new Date().toISOString(), visit_count: (userProfile.visit_count || 0) + 1 })
+          });
+        } else {
+          // Create new user
+          const createUser = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+            method: 'POST',
+            headers: { 
+              'apikey': SUPABASE_KEY, 
+              'Authorization': `Bearer ${SUPABASE_KEY}`, 
+              'Content-Type': 'application/json', 
+              'Prefer': 'return=representation' 
+            },
+            body: JSON.stringify({ fingerprint, profile: userData || {}, visit_count: 1, created_at: new Date().toISOString(), last_seen: new Date().toISOString() })
+          });
+          const newUsers = await createUser.json();
+          if (newUsers && newUsers.length > 0) {
+            userProfile = newUsers[0];
+          }
+        }
+      } catch (dbError) {
+        console.error('Supabase Error (User fetching/creation):', dbError);
+        // No bloqueamos la ejecución, permitimos que el chat funcione aunque falle la DB
       }
     }
 
     // 2. Build enhanced system with user memory
-    let enhancedSystem = system;
+    let enhancedSystem = system || '';
     if (userProfile && userProfile.profile && Object.keys(userProfile.profile).length > 0) {
       const p = userProfile.profile;
       enhancedSystem += `\n\nMEMORIA DEL USUARIO (visitas anteriores):
-Este usuario ha visitado ScentIQ ${userProfile.visit_count} veces.
+Este usuario ha visitado ScentIQ ${userProfile.visit_count || 1} veces.
 ${p.nombre ? `Se llama ${p.nombre}.` : ''}
 ${p.genero ? `Género: ${p.genero}.` : ''}
 ${p.ciudad ? `Ciudad: ${p.ciudad}.` : ''}
@@ -53,12 +72,12 @@ ${p.notas_no_gustadas ? `Notas que NO le gustan: ${p.notas_no_gustadas}.` : ''}
 USA ESTA INFORMACIÓN para personalizar la conversación. Salúdalo como si lo conocieras. No repitas preguntas que ya respondió antes.`;
     }
 
-    // 3. Call Claude API (MODELO CORREGIDO AQUÍ)
+    // 3. Call Claude API
     const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({ 
-        model: 'claude-3-5-sonnet-20241022', // <--- Nombre oficial corregido
+        model: 'claude-3-5-sonnet-20241022', 
         max_tokens: 1500, 
         system: enhancedSystem, 
         messages 
@@ -67,47 +86,59 @@ USA ESTA INFORMACIÓN para personalizar la conversación. Salúdalo como si lo c
 
     if (!claudeRes.ok) {
       const err = await claudeRes.text();
-      console.error('Anthropic error:', err);
-      return res.status(500).json({ error: 'API error', detail: err });
+      console.error('Anthropic API error:', err);
+      return res.status(500).json({ error: 'Anthropic API error', detail: err });
     }
 
     const claudeData = await claudeRes.json();
     const reply = claudeData.content?.map(b => b.text || '').join('') || '';
 
-    // 4. Extract profile updates from conversation
+    // 4. Extract profile updates from conversation (Protección contra fallos)
     if (fingerprint && userProfile) {
-      const allText = messages.map(m => m.content).join(' ').toLowerCase();
-      const profileUpdate = { ...((userProfile.profile) || {}) };
+      try {
+        const allText = messages.map(m => m.content).join(' ').toLowerCase();
+        const profileUpdate = { ...((userProfile.profile) || {}) };
 
-      if (allText.match(/\bsoy hombre\b|\bmasculin/)) profileUpdate.genero = 'Hombre';
-      else if (allText.match(/\bsoy mujer\b|\bfemenin/)) profileUpdate.genero = 'Mujer';
-      const ciudades = ['bogotá','bogota','medellín','medellin','cali','barranquilla','santa marta','cartagena','bucaramanga','pereira'];
-      ciudades.forEach(c => { if(allText.includes(c)) profileUpdate.ciudad = c.charAt(0).toUpperCase()+c.slice(1); });
-      if (allText.match(/\$(\d+)/)) profileUpdate.presupuesto = allText.match(/\$(\d+)/)[0];
-      if (allText.includes('lattafa')||allText.includes('árabe')||allText.includes('oud')) profileUpdate.familias_favoritas = 'Oriental/Árabe';
-      if (allText.includes('fresco')||allText.includes('cítrico')) profileUpdate.familias_favoritas = (profileUpdate.familias_favoritas||'')+' Fresco';
+        if (allText.match(/\bsoy hombre\b|\bmasculin/)) profileUpdate.genero = 'Hombre';
+        else if (allText.match(/\bsoy mujer\b|\bfemenin/)) profileUpdate.genero = 'Mujer';
+        
+        const ciudades = ['bogotá','bogota','medellín','medellin','cali','barranquilla','santa marta','cartagena','bucaramanga','pereira'];
+        ciudades.forEach(c => { if(allText.includes(c)) profileUpdate.ciudad = c.charAt(0).toUpperCase()+c.slice(1); });
+        
+        const budgetMatch = allText.match(/\$(\d+)/);
+        if (budgetMatch) profileUpdate.presupuesto = budgetMatch[0];
+        
+        if (allText.includes('lattafa') || allText.includes('árabe') || allText.includes('oud')) profileUpdate.familias_favoritas = 'Oriental/Árabe';
+        if (allText.includes('fresco') || allText.includes('cítrico')) profileUpdate.familias_favoritas = (profileUpdate.familias_favoritas || '') + ' Fresco';
 
-      await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}`, {
-        method: 'PATCH',
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profile: profileUpdate })
-      });
+        await fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}`, {
+          method: 'PATCH',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profile: profileUpdate })
+        });
+      } catch (updateError) {
+        console.error('Error updating user profile keywords:', updateError);
+      }
     }
 
-    // 5. Save conversation to DB
-    if (fingerprint && userProfile?.id) {
-      await fetch(`${SUPABASE_URL}/rest/v1/conversations`, {
-        method: 'POST',
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: userProfile.id,
-          fingerprint,
-          messages: messages,
-          reply,
-          created_at: new Date().toISOString(),
-          metadata: { msg_count: messages.length }
-        })
-      });
+    // 5. Save conversation to DB (Con ID verificado)
+    if (fingerprint && userProfile && userProfile.id) {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/conversations`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: userProfile.id,
+            fingerprint,
+            messages: messages,
+            reply,
+            created_at: new Date().toISOString(),
+            metadata: { msg_count: messages.length }
+          })
+        });
+      } catch (convError) {
+        console.error('Error saving conversation to Supabase:', convError);
+      }
     }
 
     return res.status(200).json({ reply, userProfile: userProfile ? { visitCount: userProfile.visit_count, profile: userProfile.profile } : null });
