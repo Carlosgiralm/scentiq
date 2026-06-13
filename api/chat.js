@@ -5,14 +5,16 @@ export default async function handler(req, res) {
 
   try {
     const { messages } = req.body;
-    const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+    const key = process.env.ANTHROPIC_API_KEY;
+
+    if (!key) return res.status(500).json({ error: 'Falta la API Key' });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01'
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json'
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20240620',
@@ -22,13 +24,8 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    
-    if (!response.ok) {
-      return res.status(500).json({ error: 'Error en la API de Anthropic', details: data });
-    }
-
-    return res.status(200).json({ reply: data.content[0].text });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(response.status).json(data);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 }
