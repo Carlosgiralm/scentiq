@@ -514,83 +514,190 @@ function renderFlowStep(){
 }
 
 // ── FIND FLOW ──
+// Steps: 0=genero, 1=ocasion, 2=presupuesto, 3=experiencia, 4=tinder olores, 5=expectativa abierta, 6=generando
 function renderFindFlow(c){
-  const steps=[
-    ()=>renderQuestion(c,'¿Has usado perfumes antes?','Cuéntanos tu experiencia — sin importar cuánto sepas.',[
-      {icon:'✅',title:'Sí, he usado perfumes',sub:'Tengo experiencia con algunas fragancias',val:'si'},
-      {icon:'🆕',title:'No, nunca he usado',sub:'Quiero empezar desde cero',val:'no'},
-      {icon:'🤔',title:'No recuerdo bien',sub:'Tal vez alguna vez pero no estoy seguro',val:'norecuerdo'},
-    ],'exp',15),
-    ()=>{
-      if(flowData.exp==='no'){
-        // Discovery path
-        renderDiscovery(c);
-      } else {
-        renderQuestion(c,'¿Para qué momentos buscas el perfume?','Puedes elegir más de uno.',[
-          {icon:'💼',title:'Trabajo u oficina',sub:'Profesional y discreto',val:'trabajo'},
-          {icon:'🌙',title:'Salidas y citas',sub:'Impactante y memorable',val:'citas'},
-          {icon:'☀️',title:'Uso diario',sub:'Fresco y cómodo',val:'diario'},
-          {icon:'🎉',title:'Eventos y fiestas',sub:'Llamativo y especial',val:'fiesta'},
-          {icon:'🔄',title:'Versátil para todo',sub:'Que funcione en cualquier momento',val:'versatil'},
-        ],'ocasion',30);
-      }
-    },
-    ()=>renderPresupuesto(c,50),
-    ()=>renderGenerando(c),
-  ];
-  if(flowStep<steps.length)steps[flowStep]();
+  if(flowStep===0)renderFindStep0(c);
+  else if(flowStep===1)renderFindStep1(c);
+  else if(flowStep===2)renderPresupuesto(c,40);
+  else if(flowStep===3)renderFindStep3(c);
+  else if(flowStep===4)renderTinder(c);
+  else if(flowStep===5)renderFindStep5(c);
+  else if(flowStep===6)renderGenerando(c);
 }
 
-function renderDiscovery(c){
+function renderFindStep0(c){
+  setProgress(10);
+  c.innerHTML=`<div class="flow-question">Empecemos 👋</div>
+  <div class="flow-subtitle">Solo necesito conocerte un poco. Son 5 pasos rápidos.</div>
+  <div class="opt-list">
+    <button class="opt-btn" onclick="findNext('genero','hombre')">
+      <span class="opt-icon">👨</span><div class="opt-text"><div class="opt-title">Hombre</div></div>
+    </button>
+    <button class="opt-btn" onclick="findNext('genero','mujer')">
+      <span class="opt-icon">👩</span><div class="opt-text"><div class="opt-title">Mujer</div></div>
+    </button>
+    <button class="opt-btn" onclick="findNext('genero','unisex')">
+      <span class="opt-icon">🧑</span><div class="opt-text"><div class="opt-title">Me da igual, lo que huele bien</div></div>
+    </button>
+  </div>`;
+}
+
+function renderFindStep1(c){
   setProgress(25);
-  const pairs=[
-    {a:{icon:'☕',label:'Cálido y envolvente',desc:'Como café, vainilla, madera'},b:{icon:'🍋',label:'Fresco y despertador',desc:'Como limón, menta, brisa marina'},key:'par1'},
-    {a:{icon:'🌲',label:'Elegante y profundo',desc:'Como cedro, cuero, tabaco'},b:{icon:'🌸',label:'Suave y romántico',desc:'Como flores, polvos, seda'},key:'par2'},
-    {a:{icon:'🔥',label:'Intenso y llamativo',desc:'Que deja huella donde entras'},b:{icon:'🧼',label:'Limpio y profesional',desc:'Discreto, agradable a todos'},key:'par3'},
-  ];
-  c.innerHTML=`<div class="flow-question">Vamos a descubrir qué te gusta</div>
-  <div class="flow-subtitle">Elige el que más te llame la atención en cada par. No hay respuesta incorrecta.</div>
-  <div class="vs-container" id="vs-container"></div>
-  <button class="cta-btn" id="disc-next" onclick="discNext()" disabled>Continuar →</button>`;
-  const vc=c.querySelector('#vs-container');
-  pairs.forEach(p=>{
-    const row=document.createElement('div');
-    row.className='vs-row';
-    row.innerHTML=`<div class="vs-card" onclick="selectVS(this,'${p.key}','a')">
-        <div class="vs-icon">${p.a.icon}</div>
-        <div class="vs-label">${p.a.label}</div>
-        <div class="vs-desc">${p.a.desc}</div>
-      </div>
-      <div class="vs-sep">VS</div>
-      <div class="vs-card" onclick="selectVS(this,'${p.key}','b')">
-        <div class="vs-icon">${p.b.icon}</div>
-        <div class="vs-label">${p.b.label}</div>
-        <div class="vs-desc">${p.b.desc}</div>
-      </div>`;
-    vc.appendChild(row);
-  });
+  c.innerHTML=`<div class="flow-question">¿Para qué momento lo buscas?</div>
+  <div class="flow-subtitle">Puedes elegir más de uno.</div>
+  <div class="opt-list" id="opt-list">
+    <button class="opt-btn" onclick="toggleMulti(this,'ocasion','trabajo')"><span class="opt-icon">💼</span><div class="opt-text"><div class="opt-title">Trabajo u oficina</div><div class="opt-sub">Discreto, profesional</div></div></button>
+    <button class="opt-btn" onclick="toggleMulti(this,'ocasion','citas')"><span class="opt-icon">🌙</span><div class="opt-text"><div class="opt-title">Salidas y citas</div><div class="opt-sub">Impactante, memorable</div></div></button>
+    <button class="opt-btn" onclick="toggleMulti(this,'ocasion','diario')"><span class="opt-icon">☀️</span><div class="opt-text"><div class="opt-title">Uso diario</div><div class="opt-sub">Cómodo, fresco</div></div></button>
+    <button class="opt-btn" onclick="toggleMulti(this,'ocasion','gym')"><span class="opt-icon">💪</span><div class="opt-text"><div class="opt-title">Gimnasio y deporte</div><div class="opt-sub">Ligero, limpio</div></div></button>
+    <button class="opt-btn" onclick="toggleMulti(this,'ocasion','eventos')"><span class="opt-icon">🎉</span><div class="opt-text"><div class="opt-title">Eventos especiales</div><div class="opt-sub">Llamativo, elegante</div></div></button>
+    <button class="opt-btn" onclick="toggleMulti(this,'ocasion','versatil')"><span class="opt-icon">🔄</span><div class="opt-text"><div class="opt-title">Versátil para todo</div><div class="opt-sub">Que funcione siempre</div></div></button>
+  </div>
+  <button class="cta-btn" id="multi-next" onclick="findNext('_skip','')" disabled style="margin-bottom:1rem">Continuar →</button>`;
 }
 
-let vsSelections={};
-function selectVS(el,key,val){
-  const row=el.parentElement;
-  row.querySelectorAll('.vs-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  vsSelections[key]=val;
-  // Check if all selected
-  if(Object.keys(vsSelections).length>=3){
-    document.getElementById('disc-next').disabled=false;
-  }
+function renderFindStep3(c){
+  setProgress(55);
+  c.innerHTML=`<div class="flow-question">¿Ya tienes perfumes?</div>
+  <div class="flow-subtitle">Esto nos ayuda a recomendarte algo diferente o complementario.</div>
+  <div class="opt-list">
+    <button class="opt-btn" onclick="findNext('exp','si')">
+      <span class="opt-icon">✅</span><div class="opt-text"><div class="opt-title">Sí, ya tengo algunos</div><div class="opt-sub">Me puedes recomendar algo nuevo</div></div>
+    </button>
+    <button class="opt-btn" onclick="findNext('exp','no')">
+      <span class="opt-icon">🆕</span><div class="opt-text"><div class="opt-title">No, es mi primer perfume</div><div class="opt-sub">Estoy empezando desde cero</div></div>
+    </button>
+  </div>`;
 }
-function discNext(){
-  flowData.discovery=vsSelections;
-  // Map to profile
-  const tastes=[];
-  if(vsSelections.par1==='a')tastes.push('Cálido');else tastes.push('Fresco');
-  if(vsSelections.par2==='a')tastes.push('Amaderado');else tastes.push('Floral');
-  if(vsSelections.par3==='a')tastes.push('Intenso');else tastes.push('Limpio');
-  flowData.tastes=tastes;
-  flowStep=2;renderFlowStep();
+
+function renderFindStep5(c){
+  setProgress(85);
+  c.innerHTML=`<div class="flow-question">Última pregunta ✨</div>
+  <div class="flow-subtitle">Cuéntame con tus palabras: ¿qué quieres sentir o proyectar con este perfume?</div>
+  <textarea class="flow-input" id="expectativa" placeholder="Ej: Quiero sentirme seguro en el trabajo, que la gente me recuerde cuando salgo del cuarto, algo que me recuerde a la lluvia o al mar..." rows="4" style="height:120px;margin-bottom:.5rem"></textarea>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:1rem">No hay respuesta incorrecta. Cuanto más honesto seas, más preciso será el resultado.</div>
+  <button class="cta-btn" onclick="captureExpectativa()">Ver mis recomendaciones →</button>`;
+}
+
+function captureExpectativa(){
+  const val=document.getElementById('expectativa').value.trim();
+  flowData.expectativa=val||'Sin preferencia específica';
+  flowStep=6;renderFlowStep();
+}
+
+// ── TINDER DE OLORES ──
+const tinderCards=[
+  {emoji:'🌧️',label:'Lluvia fresca',desc:'Ese olor a tierra mojada después de llover',familia:'Acuático/Fresco',val:'lluvia'},
+  {emoji:'🌊',label:'Brisa marina',desc:'Sal, agua, viento del mar',familia:'Acuático',val:'mar'},
+  {emoji:'☕',label:'Café y vainilla',desc:'Cálido, dulce, envolvente',familia:'Gourmand',val:'cafe'},
+  {emoji:'🌸',label:'Flores suaves',desc:'Rosa, jazmín, peonía',familia:'Floral',val:'flores'},
+  {emoji:'🌲',label:'Bosque y madera',desc:'Cedro, sándalo, tierra húmeda',familia:'Amaderado',val:'madera'},
+  {emoji:'🍋',label:'Cítrico fresco',desc:'Limón, bergamota, naranja',familia:'Cítrico',val:'citrico'},
+  {emoji:'🔥',label:'Especiado intenso',desc:'Pimienta, canela, oud árabe',familia:'Oriental',val:'especiado'},
+  {emoji:'🍦',label:'Dulce cremoso',desc:'Caramelo, pralinado, almendra',familia:'Gourmand',val:'dulce'},
+  {emoji:'🧼',label:'Limpio y fresco',desc:'Talco, almizcle suave, jabón de lujo',familia:'Fresco/Limpio',val:'limpio'},
+  {emoji:'🍃',label:'Verde y herbal',desc:'Hierba recién cortada, menta, lavanda',familia:'Aromático',val:'verde'},
+  {emoji:'🕌',label:'Oud y resinas',desc:'Maderas orientales, incienso, ámbar',familia:'Oriental/Árabe',val:'oud'},
+  {emoji:'🍑',label:'Frutal jugoso',desc:'Melocotón, mango, frutas tropicales',familia:'Frutal',val:'frutal'},
+];
+
+let tinderIdx=0;
+let tinderLikes=[];
+let tinderDislikes=[];
+
+function renderTinder(c){
+  setProgress(70);
+  tinderIdx=0;tinderLikes=[];tinderDislikes=[];
+  c.innerHTML=`
+  <div class="flow-question">¿Cuáles olores te gustan?</div>
+  <div class="flow-subtitle">Desliza o elige 👍 si te gusta, 👎 si no. Es como Tinder pero de olores.</div>
+  <div id="tinder-wrap" style="position:relative;min-height:260px;margin-bottom:1rem"></div>
+  <div style="display:flex;gap:10px;margin-bottom:1.5rem">
+    <button onclick="tinderSwipe('no')" style="flex:1;padding:16px;border-radius:var(--r2);border:2px solid #e74c3c;background:white;font-size:24px;cursor:pointer;transition:all .15s" id="btn-no">👎</button>
+    <button onclick="tinderSwipe('si')" style="flex:1;padding:16px;border-radius:var(--r2);border:2px solid var(--green);background:white;font-size:24px;cursor:pointer;transition:all .15s" id="btn-si">👍</button>
+  </div>
+  <div id="tinder-progress" style="font-size:12px;color:var(--text3);text-align:center"></div>`;
+  renderTinderCard();
+}
+
+function renderTinderCard(){
+  const wrap=document.getElementById('tinder-wrap');
+  if(!wrap)return;
+  if(tinderIdx>=tinderCards.length){
+    finishTinder();return;
+  }
+  const card=tinderCards[tinderIdx];
+  const prog=document.getElementById('tinder-progress');
+  if(prog)prog.textContent=`${tinderIdx+1} de ${tinderCards.length}`;
+  wrap.innerHTML=`<div id="tinder-card" style="
+    background:white;border:1px solid var(--gold-border);border-radius:var(--r2);
+    padding:2rem 1.5rem;text-align:center;box-shadow:var(--shadow2);
+    animation:fu .2s ease;cursor:pointer;user-select:none;
+    transition:transform .15s,opacity .15s">
+    <div style="font-size:64px;margin-bottom:1rem">${card.emoji}</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text);margin-bottom:.5rem">${card.label}</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:.75rem;line-height:1.5">${card.desc}</div>
+    <div style="display:inline-block;font-size:11px;padding:3px 12px;border-radius:20px;background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border2)">${card.familia}</div>
+  </div>`;
+  // Touch/swipe support
+  const el=document.getElementById('tinder-card');
+  let startX=0;
+  el.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;},{passive:true});
+  el.addEventListener('touchend',e=>{
+    const diff=e.changedTouches[0].clientX-startX;
+    if(Math.abs(diff)>50)tinderSwipe(diff>0?'si':'no');
+  },{passive:true});
+}
+
+function tinderSwipe(dir){
+  const card=document.getElementById('tinder-card');
+  if(!card)return;
+  const current=tinderCards[tinderIdx];
+  if(dir==='si'){
+    tinderLikes.push(current.val);
+    card.style.transform='translateX(120%) rotate(15deg)';
+    card.style.opacity='0';
+    // Flash green
+    const btn=document.getElementById('btn-si');
+    if(btn){btn.style.background='var(--green)';btn.style.color='white';setTimeout(()=>{btn.style.background='white';btn.style.color='inherit';},200);}
+  } else {
+    tinderDislikes.push(current.val);
+    card.style.transform='translateX(-120%) rotate(-15deg)';
+    card.style.opacity='0';
+    const btn=document.getElementById('btn-no');
+    if(btn){btn.style.background='#e74c3c';btn.style.color='white';setTimeout(()=>{btn.style.background='white';btn.style.color='inherit';},200);}
+  }
+  tinderIdx++;
+  setTimeout(renderTinderCard,200);
+}
+
+function finishTinder(){
+  flowData.tinderLikes=tinderLikes;
+  flowData.tinderDislikes=tinderDislikes;
+  // Map to taste profile
+  const familias=tinderCards.filter(c=>tinderLikes.includes(c.val)).map(c=>c.familia);
+  flowData.tastes=[...new Set(familias)];
+  userProfile.familias_favoritas=flowData.tastes.join(', ');
+  renderProfile();
+  flowStep=5;renderFlowStep();
+}
+
+function findNext(key,val){
+  if(key!=='_skip')flowData[key]=val;
+  flowStep++;renderFlowStep();
+}
+
+function toggleMulti(el,key,val){
+  el.classList.toggle('selected');
+  if(!flowData[key])flowData[key]=[];
+  if(el.classList.contains('selected')){
+    if(!flowData[key].includes(val))flowData[key].push(val);
+  }else{
+    flowData[key]=flowData[key].filter(v=>v!==val);
+  }
+  const btn=document.getElementById('multi-next');
+  if(btn)btn.disabled=(!flowData[key]||flowData[key].length===0);
 }
 
 function renderQuestion(c,q,sub,opts,key,prog,multi=false){
@@ -773,164 +880,14 @@ function renderGiftFlow(c){
 
 // ══ AI CALL ══
 function getSystemPrompt(){
-  let mem='';
-  if(userMemory?.profile&&Object.keys(userMemory.profile).length>0){
-    const p=userMemory.profile;
-    mem=`\nMEMORIA (${userMemory.visit_count} visitas): ${p.genero?`Género: ${p.genero}.`:''} ${p.edad?`Edad: ${p.edad}.`:''} ${p.presupuesto?`Presupuesto: ${p.presupuesto}.`:''} ${p.familias_favoritas?`Gustos: ${p.familias_favoritas}.`:''} ${p.perfumes_tiene?`Tiene: ${p.perfumes_tiene}.`:''}`;
-  }
-  return`Eres ScentIQ, el mejor asesor de perfumería de Colombia. Eres cálido, directo y hablas como un amigo experto — no como un catálogo.
-CLIMA ACTUAL: ${weatherCtx||'No disponible.'}${mem}
-
-BASE DE CONOCIMIENTO COLOMBIA 2025:
-
-ACCESIBLES (hasta $150.000 COP / ~$35 USD):
-
-Lattafa (380+ perfumes, Dubai 1980): 
-BESTSELLERS COLOMBIA: Asad (cálido especiado amaderado alt. Dior Sauvage Elixir, #1 masculino accesible Colombia), Asad Bourbon (oriental especiado pralinado, conversión casi 100%), Asad Amber, Khamrah (dulce oriental vainilla miel almizclado, alt. Initio Absolute Aphrodisiac, muy vendido), Khamrah Qahwa (café cardamomo especias gourmand oscuro), Yara (floral frutal dulce femenino, #1 femenino árabe Colombia 2025), Yara Elixir (más intenso cremoso), Yara Candy, Yara Mon Beau |
-VIRALES TIKTOK 2024-2026: Teriaq (caramelo almendra chabacano miel cuero vainilla viral), Teriaq Intense (versión dark, viral TikTok 2024 en España y LATAM), Give Me Gourmand Vanilla Freak (2025 vainilla gourmand helado viral), Give Me Gourmand colección completa (helados gourmand varios sabores, empaque creativo viral), Yum Yum EDP (frutal cremoso muy vendido Colombia por mayoristas 2025-2026) |
-COLECCIÓN COMPLETA: Oud For Glory, Oud Mood, Oud Mood Elixir, Raghba (dulce amaderado clásico), Raghba Wood Intense, Badee Al Oud Sublime, Badee Al Oud Vanilla, Badee Al Oud Amethyst, Ameer Al Oud, Ameer Al Oud Special Edition, Khaltaat Al Arabia (mezcla oriental clásico), Khaltaat Al Arabia Red/Blue, Fakhar Man/Woman, Najdia, Qaed Al Fursan, Qaed Al Fursan Leather, Eclaire, Hayaati Gold Elixir, Hayaati Masculin, Maahir (alt. Creed Silver Mountain Water), Maahir Black, Angham, Ana Abiyedh (almizcle blanco limpio unisex), 24 Carat Gold, Confession Collection, Opulent Musk, Mayar, Habik, Musamam, Lady Lattafa, Ajayeb, Ajwad, Al Noble, Al Nashama, Lattafa Pride colección, Niche Emarati Collection, Gourmand Series completa
-
-Armaf (EAU, Dubai): Club de Nuit Intense Man (alt. Creed Aventus — TOP VENTAS), Yum Yum EDP (2023 — botella de milkshake/helado, viral TikTok, frutal cremoso femenino/unisex, muy pedido Colombia), Club de Nuit Intense Woman, Club de Nuit Blue Sillage, Club de Nuit Milestone, Club de Nuit Urban Man, Club de Nuit Urban Man Elixir, Tres Nuit (alt. Bleu de Chanel), Hunter (alt. YSL Y EDP), Voyage, Voyage Bleu, Odyssey Man, Sillage, De La Marque Rouge, Radical Rose, Radical Sport, Drift Homme, Drift Femme, Mandarin Sky (alt. Creed Millesime Imperial — MAS BUSCADO Colombia 2025), Enchanted, Shades, Evocateur, Legesi
-
-Rasasi (396 perfumes, Dubai 1979): 
-COLECCIÓN HAWAS COMPLETA (la más viral de Rasasi): Hawas for Him (fougère acuático original — el clásico), Hawas Ice (mentolado fresco 2023), Hawas Black (2024 — aromático frutal, alt. Nishane Hacivat, piña bergamota toronja, muy solicitado), Hawas Fire (2025 — sorpresa: suena caliente pero es fresco aromático, salvia clary + jazmín egipcio + notas marinas + ámbar, 12h duración, alt. YSL Y EDP con frutas), Hawas Elixir (2025 — versión concentrada más oscura del original), Hawas Tropical (2025 — coco agua de coco hoja de higo jengibre + menta sándalo tonka, verano tropical, beast mode proyección), Hawas Malibu (2025 — piña naranja pomelo + ámbar iris lavanda + tonka almizc cashmere, tropical sofisticado unisex), Hawas Kobra (2025 — jengibre bergamota tangerina + té verde canela neroli + almizcle madera ámbar, oriental amaderado masculino, genera cumplidos bestiales), Hawas Atlantis (2025 — acuático verde marino polarizante, no apto principiantes), Hawas Viper (2025), Hawas Eclat (2025 femenino), Hawas Pink (2025 femenino), Hawas Chrome (2026 — fresco acuático), Hawas for Her Diva |
-RESTO COLECCIÓN: La Yuqawam (oud frutal masculino), La Yuqawam Femme, Dhan Al Oudh Abiyad, Dhan Al Oudh Safwa, Dhan Al Oudh Malaki, Egra (cítrico fresco), Royale Highness, Fattan Pour Homme, Chastity Pour Homme, Junoon Sillage, Al Wisam Day/Evening, Mukhallat Al Wafa, Manarah, Shuhrah (nostálgico salvia limón floral oud), Shuhrah Elixir (2025), Qasamat Rasana (unisex oud cuero ahumado), Nebras Al Ishq, Sotoor, Tagreed, Somow Al Rasasi, Aura Collection, Aliza, Boruzz, Red Carpet Series
-
-Afnan: 9PM (alt. Paco Rabanne 1 Million — MUY VENDIDO), 9AM (fresco matutino masculino), 9PM EDP, 9PM Elixir, Supremacy Noir (oud amaderado intenso), Supremacy Silver (fresco amaderado, alt. CH 212 VIP), Supremacy Blue (acuático), Supremacy Incense, Supremacy Not Only Intense, Musk Is Great (almizcle suave), Violet Bouquet (floral femenino), Turathi Blue, Turathi Brown, Zimaya Fakhar, Niche Emarati, Bouquet Collection, 1 am, Cloud 9, Rare Carbon, Dehn Al Oud Malaki
-
-Al Haramain: Amber Oud (oriental amaderado suave, unisex), Amber Oud Gold Edition, Amber Oud Blue Edition, Amber Oud Rouge Edition, Madinah (oriental suave clásico), L'Aventure (aventus árabe), L'Aventure Femme, Omnitude, Amazing Attar, Black Musk, Mukhalat Maliki, Persian Oud, Mystique Femme, Junoon Rose, Lalha
-
-Bharara: King (amaderado especiado dulce, TOP VENTAS Colombia 2025), King Soleil (cítrico solar), King Rose (floral femenino), King EDP Intense, Mast Rome (oriental moderno), Mast Rome Fantasmagory, Berry Breezy, Niche 42
-
-Jo Milano Paris (Nueva York/Italia): Game of Spades All In (bergamota, lavanda, ámbar, cedro — versátil elegante), Game of Spades Wildcard (almizcle moderno, alt. Bond No.9 Lafayette Street), Game of Spades Win (frutal floral unisex), Game of Spades Rouge (alt. MFK Baccarat Rouge 540 — jazmín, amberwood), Game of Spades Royale (bergamota, jazmín, cedro — elegante), Game of Spades Ruby (azafrán, rosa, ámbar picante — oriental), Game of Spades Full House (alt. Louis Vuitton Imagination — cítrico amaderado), Game of Spades Jackpot (cítrico especiado dulce), Game of Spades Platinum (fresco limpio moderno), Game of Spades Queen (azafrán, jazmín, ámbar — sofisticado femenino), Wood Nuit (madera palisandro, sándalo, ámbar), Mi Amour Rose Gold (floral frutal, azahar, pera, vainilla)
-
-Fragrance World: Liquid Burn (alt. Parfums de Marly Althair), Oud Satin Mood (alt. MFK Grand Soir), Black Oud, Pure Musk, Opal, Noir Absolu
-
-Pendora Scents/Paris Corner: Encens Roi, Baccarat Oud, Peach Me, Salim
-
-Maison Alhambra: Lathan (alt. Parfums de Marly Layton — TOP VENDIDO), Minerale (alt. Acqua di Gio Profondo), Pierre (alt. Parfums de Marly Herod), Rayef, Malia, Iconic, Exclusif Ambre
-
-Ard Al Zaafaran: Oud Al Layl, Suroori, Suroori Crystal, Dirham, Dirham Gold, Oud Mas, Bade Al Oud Amethyst, Ghali
-
-Sterling Parfums: Magna Carta, Spectre, Electimuss Alta Serie
-
-Milestone: colección variada muy vendida en supermercados y droguerías Colombia
-Emper: colección masculina popular Colombia
-Surrati: Oud Tahiri, Musk Malaki, Rose Malaki, Attar Al Kaaba
-
-MID RANGE ($150.000–$400.000 COP / $40–$100 USD):
-
-Carolina Herrera: 212 Men (fresco masculino urbano), 212 Men NYC, 212 Men Sexy (cítrico especiado), 212 VIP Men (amaderado gourmand exclusivo), 212 VIP Black Men, 212 VIP Rose (femenino floral rosado), Good Girl (gourmand floral oscuro — TOP VENTAS femenino Colombia), Very Good Girl (floral fresco), Good Boy (amaderado suave masculino), Bad Boy (madera cedro especiado masculino), Bad Boy Cobalt, Bad Boy Extreme, Very Good Girl Glam, 212 Heroes, 212 Sexy Men, 212 EDP, CH Men, CH Men Prive, CH L'Eau, CH Eau de Toilette
-
-Versace: Eros EDT/EDP (menta manzana verde tonka — ICÓNICO), Eros Flame (naranja pimienta roja madera seductor), Eros Energy (cítrico fresco 2024), Eros Parfum, Eros Pour Femme, Dylan Blue Pour Homme (acuático amaderado marino), Dylan Blue Pour Femme, Dylan Purple (cítrico frutal femenino), Pour Homme (mediterráneo bergamota neroli clásico), Man Eau Fraiche (acuático fresco sport), Bright Crystal (floral frutal femenino TOP VENTAS), Crystal Noir (floral oriental nocturno seductor), Yellow Diamond, Versense, Pour Femme Dylan Turquoise, Atelier Versace Encens Suave, Medusa Rhapsody, Signaturea
-
-Hugo Boss: Boss Bottled (manzana canela madera — clásico 1998), Boss Bottled Intense, Boss Bottled Elixir, Boss Bottled Absolu (incienso mirra madera — mejor fragancia 2025), Boss Bottled Beyond (jengibre cuero, innovador), Boss The Scent (jengibre maninka cuero — seductor nocturno), Boss The Scent Intense, Boss The Scent Private Accord, Boss The Scent Absolute, Boss Alive (floral almizclado femenino), Boss Alive Intense, Boss Nuit Pour Femme, Boss Ma Vie, Hugo Man (verde manzana fresco icónico 1995), Hugo Man Extreme, Hugo Man Edt, Hugo XY, Hugo XX, Boss Number One, Boss Orange Man, Boss In Motion, Boss Jour
-
-Givenchy: Gentleman (iris amaderado clásico), Gentleman Society (oriental amaderado 2023), Gentleman Society Extreme, Gentleman Boisée (amaderado oscuro), Gentleman EDP, Ange ou Demon (floral oriental femenino), Le Secret (femenino floral fresco), Irresistible (floral amaderado femenino moderno), Irresistible Intense Rose, Dahlia Divin, Live Irrésistible, L'Interdit (floral oscuro femenino), Ysatis, Pi
-
-Bvlgari: Man in Black (ron oud cuero amaderado — ICÓNICO masculino), Man Black Orient, Man Wood Essence, Man Terrae Essence, Aqva Pour Homme (acuático marino fresco), Aqva Atlantiqve, Aqva Divina, Wood Neroli (cítrico amaderado moderno), Goldea (floral solar femenino), Goldea Roman Night, Splendida Magnolia, Splendida Patchouli Tentation, Eau Parfumée au Thé Vert, Rose Goldea, Omnia Crystalline, Omnia Coral, Allegra Magnifying Bergamot
-
-Jean Paul Gaultier: Le Male (lavanda vainilla especiado — ICÓNICO), Ultra Male (oriental dulce intenso), Le Male Elixir (oriental amaderado concentrado — muy pedido), Le Male Essence, Le Male Le Parfum, Scandal Pour Homme (miel cuero especiado), Scandal Pour Femme, Scandal By Night, Le Beau (coco acuático tropical), Le Beau Paradise Garden, La Belle (floral gourmand femenino)
-
-Paco Rabanne: 1 Million (especiado mandarina cuero — ICÓNICO), 1 Million Lucky, 1 Million Parfum, 1 Million Elixir, Invictus (marino grapefruit amaderado), Invictus Victory, Invictus Aqua, Invictus Legend, Phantom (robot botella amaderado), Phantom Parfum, Fame (femenino floral frutal metálico), Olympea (agua sal vainilla femenino), Olympea Legend, Olympea Flora, XS Pour Lui, XS Excess Pour Homme
-
-Calvin Klein: Eternity for Men (madera fougère clásico), Eternity Now Men, Eternity Air, Obsession for Men (oriental especiado cálido), Obsession Night, CK One (unisex cítrico — icónico 1994), CK One Shock, CK One Summer, CK Be (unisex fresco), Euphoria Men (oriental amaderado moderno), Euphoria Intense, Euphoria Gold, Defy (bergamota madera masculino 2021), Defy Extreme, CK Everyone (unisex fresco sostenible), Escape Men/Women, eternity Flame
-
-Azzaro: Chrome (fresco acuático clásico), Chrome United, Chrome Legend, Chrome Pure, Wanted (amaderado especiado moderno fresco), Wanted By Night (oriental cálido nocturno), Most Wanted (oriental amaderado moderno), Most Wanted Parfum, Most Wanted Intense, Azzaro Pour Elle, Club, Now, Decibel
-
-Burberry: Hero (madera cedro fresco masculino 2021), Hero EDP, Hero Parfum, My Burberry (floral femenino clásico), My Burberry Black (oriental oscuro), My Burberry Blush, Mr. Burberry (madera bergamota masculino clásico), Mr. Burberry EDP, Mr. Burberry Indigo (fresco especiado), Her (frutal floral moderno femenino), Her Elixir, Her London Dream, Brit for Men (madera especiada), Brit for Women, Brit Rhythm, Weekend, London, Touch, Bespoke
-
-Antonio Banderas: The Secret (fresco cítrico casual), Blue Seduction (acuático fresco), Seduction in Black (oriental especiado), The Golden Secret, Power of Seduction Absolute, The Secret Temptation
-
-Davidoff: Cool Water (acuático fresco marino — clásico 1988), Cool Water Wave, Cool Water Man Intense, Cool Water Night Dive, Zino (leñoso especiado clásico), Adventure, Champion, The Game
-
-Montale: Black Aoud (oud rosa amaderado intenso), Intense Cafe (café almendra amaderado — cult), Vanilla Absolu (vainilla suave unisex), Dark Purple (uva ciruela amaderado femenino), Roses Musk (rosa almizcle suave), Honey Aoud (oud miel floral), Arabians (oriental árabe), Chocolate Greedy (chocolate café gourmand), Oud Dream (oud suave oriental), Royal Aoud, Red Aoud, Amber & Spices, White Aoud, Starry Nights, Chypré Fruité, Ristretto Intense Café, Full Incense, Aoud Night, Aoud Damascus
-
-Mancera: Cedrat Boise (madera cedro bergamota — TOP VENTAS nicho mid), Amber & Roses (oriental floral), Red Tobacco (tabaco amaderado oscuro), Holidays (cítrico fresco alegre), Instant Crush (floral frutal dulce), Wild Python (oud cuero oscuro), Sunshine Man/Femme, Aoud Exclusif, Aoud Café, Rose Aoud, Wood & Spices, Hindu Kush, Gold Intensitive Musk, Gentle Man, Caramel Douce, Coco Fantasies, Black Gold
-
-Acqua di Parma: Colonia (cítrico clásico italiano 1930), Colonia Essenza (concentrado), Colonia Oud, Colonia Futura, Iris Nobile, Magnolia Nobile, Peonia Nobile, Blu Mediterraneo Arancia di Capri, Blu Mediterraneo Cipresso di Toscana, Assoluta, Sakura
-
-MID-ALTA ($400.000–$800.000 COP / $100–$200 USD):
-
-Dior: Sauvage EDT (bergamota ambroxan — VENTAS GLOBALES #1), Sauvage EDP (más cálido especiado), Sauvage Elixir (muy concentrado especiado amaderado oscuro), Sauvage Parfum (2023), Bleu de Chanel rival, Homme Intense (iris madera oscuro), Homme EDP 2020 (iris suave moderno), Dior Homme Parfum 2025 (Francis Kurkdjian — iris ámbar), Miss Dior EDP (floral rosa peonía), Miss Dior Blooming Bouquet (más suave floral), Miss Dior Parfum 2024 (floral ámbar), J'adore (floral ylang jazmín tuberosa — ICÓNICO femenino), J'adore Infinissime, J'adore Parfum d'Eau, Joy by Dior (floral bergamota), Poison (oriental especiado), Hypnotic Poison (vainilla almendra oscuro), Pure Poison, Midnight Poison, Fahrenheit (madera violeta gasolina — ICÓNICO 1988), Eau Sauvage (cítrico fresco clásico 1966), La Collection Privée: Oud Ispahan, Ambre Nuit, Leather Oud, Rose Ispahan, Bois d'Argent, Fleur du Désert, Cuir Cannage, Eden-Roc, Jasmin des Anges, Granville
-
-Chanel: Bleu de Chanel EDT/EDP/Parfum (cítrico amaderado — ICÓNICO masculino), Allure Homme Sport (fresco amaderado casual), Allure Homme Edition Blanche, Allure Homme (especiado cálido), N°5 (aldehído floral — el más icónico del mundo 1921), N°5 L'Eau (más fresca), Coco Mademoiselle (chypre frutal — muy vendido femenino), Coco Mademoiselle Intense, Chance EDP (floral fresco), Chance Eau Tendre (fresco suave), Chance Eau Vive, Gabrielle (floral solar), Gabrielle Essence, N°19, Cristalle, Antaeus, Égoïste, Egoiste Platinum, Coco, Chance Eau Fraiche, Les Exclusifs: Sycomore, Coromandel, Jersey, 31 Rue Cambon, Cuir de Russie
-
-Tom Ford Private Blend: Oud Wood (oud amaderado suave — ICÓNICO), Tobacco Vanille (vainilla tabaco gourmand oscuro — muy pedido), Black Orchid (floral oscuro misterioso), Neroli Portofino (cítrico mediterráneo luminoso), Fucking Fabulous (iris lavanda cuero — viral), Lost Cherry (cereza almendra oscura gourmand), Rose Prick (rosa especiada), Soleil Brûlant, Beau de Jour, Grey Vetiver, Tuscan Leather, Oud Mineral, Velvet Orchid, Santal Blush, Costa Azzurra, Metallique, Vert des Bois, Sole di Positano | Tom Ford designer: Black (especiado cuero masculino), Noir (cedro especiado masculino), Noir Extreme (oriental cálido), Noir Anthracite
-
-YSL: Y EDP (manzana cedro jengibre — moderno masculino), Y EDT, Y Le Parfum, MYSLF (lavanda naranja ambroxan 2023), La Nuit de L'Homme (especiado lavanda cardamomo — MUY VENDIDO), La Nuit de L'Homme Intense, L'Homme (madera limón bergamota clásico), L'Homme Ultime, Libre EDP (lavanda naranja floral — ÉXITO femenino), Libre Intense, Libre L'Absolu Platine, Black Opium (café vainilla jazmín — TOP femenino), Black Opium Le Parfum, Black Opium Over Red, Black Opium Neon, Mon Paris (frutal floral oscuro), Mon Paris Intensément, Manifesto, Elle, Baby Doll, Opium (oriental especiado clásico), Rive Gauche
-
-Giorgio Armani: Acqua di Gio Pour Homme (acuático marino fresco — CLÁSICO), Acqua di Gio Profumo (marino incienso intenso), Acqua di Gio Profondo (acuático marino 2021), Acqua di Gio Parfum (2022), Si EDP (frambuesa madera femenino), Si Intense, Si Passione, Si Fiori, My Way (floral tuberosa bergamota femenino), My Way Intense, My Way Parfum, Armani Code (amaderado especiado seductor), Armani Code Absolu, Armani Code Elixir, Emporio Armani Stronger With You (vainilla castañas especias), Stronger With You Intensely, Stronger With You Absolutely, Stronger With You Only, Emporio Armani Diamonds, Because It's You, In Love Again, Diamonds Rose
-
-Valentino: Uomo Intense (madera cuero amaderado), Born in Roma Uomo (vainilla madera moderna), Born in Roma Extradose Uomo (más intenso 2024), Born in Roma Donna (floral amaderado), Born in Roma Pink Flamingo, Donna Born in Roma Intense, Voce Viva (floral bergamota femenino), Voce Viva Intense, Voce Viva Magnolia, Valentino Uomo (cuero madera clásico), Uomo Born in Roma, Valentina, Valentina Pink, Valentina Assoluto
-
-Hermès: H24 (madera moderna masculina 2021), H24 EDP, Terre d'Hermès (madera pomelo naranja — ICÓNICO masculino), Terre d'Hermès Parfum, Terre d'Hermès Eau Intense Vétiver, Un Jardin sur le Nil (verde fresco unisex), Un Jardin en Méditerranée, Twilly d'Hermès (jengibre tuberosa sándalo femenino), Twilly EDP Forte, Jour d'Hermès, Eau des Merveilles, Rose Hermès, Galop, Kelly Calèche
-
-Gucci: Guilty Pour Homme (mandarina cuero madera), Guilty Pour Femme, Guilty Black Pour Homme, Bloom (floral tuberosa — popular femenino), Bloom Nettare di Fiori, Bloom Profumo di Fiori, Flora Gorgeous Gardenia, Flora Gorgeous Magnolia, Flora Gorgeous Jasmine, Mémoire d'une Odeur (manzanilla almendra madera — unisex icónico), Rush (corcholata hibisco patchouli), Rush 2, Envy, Envy Me, Bamboo, Gucci by Gucci, Made to Measure, Guilty Absolute
-
-Dolce & Gabbana: The One for Men (amaderado oriental), The One EDP, The One Parfum, Light Blue (cítrico marino masculino — muy vendido), Light Blue Eau Intense Men, Light Blue Pour Femme (floral frutal fresco), Light Blue Intense Pour Femme, K by D&G (madera jengibre), Intenso (madera amaderado oscuro), Q (floral iris femenino), The Only One, The Only One 2, Velvet Rose Oud, Velvet Wood, Devotion
-
-Prada: Luna Rossa (fougère lavanda), Luna Rossa Carbon, Luna Rossa Black, Luna Rossa Extreme, L'Homme (iris ámbar limón), L'Homme Intense, Paradoxe (ambrox floral moderno femenino 2022), Paradoxe Intense, Infusion d'Iris, La Femme, Candy, Candy Florale
-
-LUJO (+$800.000 COP / +$200 USD):
-
-Creed: Aventus (piña abedul almizcle — el más icónico nicho masculino), Aventus for Her, Green Irish Tweed (iris violeta sándalo — clásico), Silver Mountain Water (té verde bergamota), Viking (amaderado fresco), Viking Cologne, Millesime Imperial (mandarina almizcle marino — alt. Mandarin Sky), Himalaya (madera bergamota fresca), Royal Oud (oud cedro cremoso), Royal Mayfair, Wind Flowers, Love in White, Spring Flower, Erolfa, Original Vetiver, Bois du Portugal, Tabarome
-
-Parfums de Marly: Layton (manzana menta lavanda madera — BESTSELLER), Layton Exclusif, Herod (tabaco vainilla madera — favorito coleccionistas), Pegasus (almendra vetiver fougère), Percival (lavanda cedro especiado), Delina (rosa litchi peonía — TOP femenino), Delina Exclusif, Delina La Rosée, Cassili (bergamota peonía vetiver femenino), Oriana (yuzu peonía orquídea femenino), Althair (vainilla madera moderna — viral 2024), Valaya, Safanad, Meliora, Sedley, Carlisle, Greenley, Habdan, Kalan, Godolphin, Ergon
-
-MFK/Maison Francis Kurkdjian: Baccarat Rouge 540 EDP/Extrait (jazmín azafrán amberwood cedro — el nicho más deseado del mundo), Aqua Universalis (fresco limpio suave), Aqua Celestia, Aqua Vitae, Grand Soir (ámbar vainilla benjuí), À la Rose (rosa suave), Gentle Fluidity Gold/Silver, OUD (oud puro intenso), Amyris Homme, L'Homme à la Rose, 724, Pluriel
-
-Xerjoff: Erba Pura (naranja siciliana almizcle madera — top ventas nicho), Naxos (miel lavanda tabaco — cult), Alexandria II (rosa almizclado cálido), Nio (vainilla rosa almendra), Lira, 1861 Renaissance (amaderado florido), Casamorati: Bouquet Ideale, Mefisto, 1888, XJ 1861 Naxos, Shooting Stars Apollonia
-
-Nishane: Hacivat (piña cedro bergamota fresca — bestseller nicho), Ani (floral solar femenino), Fan Your Flames (amaderado oud oscuro), Wulong Cha (té verde amaderado), Sultan Vetiver, Safran Colognise, Tuberoza, Zenne, B-612, Ege
-
-Byredo: Gypsy Water (pino bergamota ambrette — CULT nicho), Bal d'Afrique (bergamota madera africana), Mojave Ghost (madera amberwood suave unisex), Sundazed (floral frutal solar), Bibliothèque (cuero melocotón vainilla), Super Cedar, Inflorescence, Blanche, Pulp, Oud Immortel, Unnamed, Chembur, La Tulipe
-
-Initio: Absolute Aphrodisiac (vainilla almizcle ambroxan — seductor), Oud for Greatness (oud intenso oscuro), Black Gold (especiado cuero oud), Side Effect (vainilla tonka ambroxan), Rehab (acordes limpios ambroxan), Psychedelic Love, Musk Therapy, Blessed Baraka
-
-Amouage: Reflection Man (floral fougère), Interlude Man (especiado intenso polarizante), Jubilation XXV (oriental especiado complejo), Gold Man (floral oriental clásico), Memoir Man (especiado oscuro), Figment Man, Epic Man, Lyric Man, Honour Man, Beach Hut Man, Boundless, Exceptional | Woman: Reflection Woman, Honour Woman, Fate Woman, Love Tuberose
-
-Le Labo: Santal 33 (sándalo cedro violeta — el nicho MÁS BUSCADO Colombia/mundo 2025), Rose 31 (rosa amaderado unisex), Another 13 (ambroxan jazmín musgo — viral), Bergamote 22 (bergamota limón cedro), Thé Noir 29 (té negro ámbar cuero), Ylang 49, Labdanum 18, Patchouli 24, Gaiac 10, Oud 27, Neroli 36
-
-Kilian Paris: Love Don't Be Shy (miel vainilla almizcle floral — MUY PEDIDO), Angels' Share (coñac madera vainilla), Black Phantom (ron café caramelo), Good Girl Gone Bad, Kissing Burns, Apple Brandy, Intoxicated, Princess, Playing With the Devil, Moonlight in Heaven
-
-Roja Parfums: Elysium (cítrico fresco masculino premium), Enigma (oriental complejo), Danger (fougère clásico premium), Scandal, Amber Aoud, Gardenia, Musk Aoud, 51 Pour Femme
-
-Bond No.9: New York Oud (oud iris masculino), Andy Warhol Madison Square Park, Lafayette Street (alt. Game of Spades Wildcard), Scent of Peace, So New York, Chinatown
-
-Memo Paris: Inlé (acuático amaderado), Marfa (cedro especiado texano), Irish Leather, African Leather, French Leather, Siwa
-
-Lorenzo Pazzaglia (Italia, nicho, Extrait 40% concentración): Pax (retrato del perfumero — complejo gourmand), Black Sea (marino oscuro), Carbonara (homenaje al plato — gourmand creativo), Cherry Ink (cereza tinta oscura), Gin Fusion (gin botánico), Summer Hammer (mejor revelación 2024 Madrid), Sun-Gria (frutal madera solar — Fragrance of Year 2024 ScentXplore), Dark Florum (floral oscuro), Gasoleather (gasolina cuero), Pink Milk (lácteo floral suave), Sugar Kisses (dulce gourmand), Bianco Latte (lácteo vainilla), Speachless (silencioso moderno)
-
-Otros lujo/nicho relevantes Colombia:
-Maison Margiela Replica: Jazz Club (tabaco vainilla ron), By the Fireplace (castaña vainilla), Flower Market (iris fresco), Beach Walk, Under the Lemon Trees, At the Barber's | Frederic Malle: Portrait of a Lady (rosa patchouli), Musc Ravageur, Carnal Flower, Portrait of a Lady | Mancera alta: Rose Aoud, Aoud Exclusif | Juliette Has a Gun: Not a Perfume (ambroxan puro), Anyway | Kayali: Vanilla 28, Elixir 11, Musk, Utopia Vanilla | Narciso Rodriguez: For Her (almizcle floral — ICÓNICO), For Her EDP Fleur Musc, For Him, Pure Musc | Issey Miyake: L'Eau d'Issey Pour Homme (acuático fresco clásico), L'Eau d'Issey Pour Femme, A Scent, Nuit d'Issey, L'Eau Super Majeure d'Issey | Viktor & Rolf: Flowerbomb (floral oriental gourmand — muy vendido femenino), Spicebomb, Spicebomb Extreme | Dolce & Gabbana Light Blue (mencionado arriba) | Jo Malone: Wood Sage & Sea Salt, Peony & Blush Suede, English Pear & Freesia, Lime Basil & Mandarin, Blackberry & Bay | Thierry Mugler: Angel (patchouli chocolatado — clásico), Alien (madera jazmín solar), Aura, Alien Goddess | Lancôme: La Vie est Belle (iris pralinado — top femenino), Trésor, Idôle, Hypnôse | Guerlain: Mon Guerlain (lavanda vainilla), La Petite Robe Noire, L'Homme Idéal, Shalimar | Mugler: Angel Elixir, Alien Elixir | Coach: Dreams (melón floral), Floral, Wild Rose | Prada Paradoxe (mención arriba) | Jean Paul Gaultier Classique | Montblanc: Legend (fougère lavanda masculino popular), Legend EDP, Legend Spirit, Explorer, Explorer Ultra Blue | Salvatore Ferragamo: Signorina Eleganza, Incanto Shine | Jimmy Choo: Flash, Illicit, Jimmy Choo EDP | Chopard: Wish | Moschino: Toy Boy, Fresh Couture | Ralph Lauren: Polo Blue, Polo Ralph Lauren, Romance, Safari
-
-TOP VENDIDOS COLOMBIA 2025: Armaf Mandarin Sky, Bharara King, Lattafa Asad Bourbon, Jo Milano Game of Spades, Ahli Karpos, Dior Sauvage Elixir, Layton | FEMENINOS: Lattafa Yara/Yara Elixir, Armaf Club de Nuit Intense Woman, Carolina Herrera Good Girl, Le Labo Santal 33, MFK Baccarat Rouge 540
-
-EQUIVALENCIAS:
-Creed Aventus≈Armaf Club de Nuit Intense (~$140k COP) | Dior Sauvage Elixir≈Lattafa Asad (~$100k) | Initio Absolute Aphrodisiac≈Lattafa Khamrah (~$120k) | Paco Rabanne 1 Million≈Afnan 9PM (~$80k) | Layton≈Maison Alhambra Lathan (~$140k) | Xerjoff Erba Pura≈Lattafa Yara (~$100k) | MFK Baccarat Rouge 540≈Jo Milano Game of Spades Rouge (~$180k) | Louis Vuitton Imagination≈Jo Milano Full House (~$180k) | Herod≈Maison Alhambra Pierre (~$140k) | YSL Y EDP≈Armaf Hunter (~$120k) | Bleu de Chanel≈Armaf Tres Nuit (~$120k) | Carolina Herrera 212 VIP≈Afnan Supremacy Silver (~$100k)
-
-VENDORS COLOMBIA:
-Disfragancias.com: +2.900 referencias, decants desde $22.000 | granaroma.com.co: especialistas nicho | fraganceroscolombia.com.co: Jo Milano y variedad | @valmara_perfumes Instagram | @maferperfumes Instagram | lmd.com.co: Jo Milano
-
-DECANTS (muestras 5ml-10ml del perfume ORIGINAL): 5ml=$22.000-$57.000 COP (50 aplicaciones) | 10ml=$35.000-$100.000 COP (100 aplicaciones). Son EL MISMO perfume del frasco grande, extraído directamente.
-
-REGLAS:
-1. Jo Milano → conoces toda la colección. Es moderna, italiana/neoyorquina, MUY popular Colombia
-2. Bharara King → amaderado especiado, top ventas, excelente precio
-3. Lattafa/árabe/oud → recomendar ese universo primero
-4. Si le gusta Asad → recomendar: Khamrah, Oud Mood, Al Haramain Amber Oud, Lattafa Oud for Glory
-5. Si le gusta Santal 33 → recomendar: Oud Mood Elixir, Montale Intense Cafe
-6. Presupuesto bajo→accesibles primero. Mid→Carolina Herrera, Versace, Montale. Lujo→Creed, Layton, MFK
-7. SIEMPRE usa el clima actual
-8. NUNCA markdown (##/**). Sin tecnicismos: NO "acorde ambarado" SÍ "cálido y envolvente"
-9. Máximo 3 recomendaciones
-10. Perfume arriesgado/polarizante→recomendar decant primero
-
+  // Knowledge base lives server-side in api/chat.js for speed
+  // Frontend only sends minimal context: climate + user intent
+  return `CONTEXTO: ${weatherCtx||'Clima no disponible.'}
 FORMATO RECOMENDACIÓN OBLIGATORIO:
-<RECS>[{"nombre":"X","casa":"Y","match":"92%","notas":"top → corazón → fondo en lenguaje simple","por_que":"razón personalizada sin tecnicismos","cuando":"cuándo usarlo","pros":["pro1","pro2","pro3"],"contras":["con1","con2"],"veredicto":"Lo compraría sin dudar / Prueba primero en decant","precio":"~$35 USD / ~$140.000 COP","vendor":"Disfragancias / MaferPerfumes","imagen_query":"nombre perfume official bottle"}]</RECS>
-SIEMPRE en español. Honesto. Cálido.`;
+<RECS>[{"nombre":"X","casa":"Y","match":"92%","notas":"top → corazón → fondo simple","por_que":"razón personalizada","cuando":"cuándo usarlo","pros":["p1","p2","p3"],"contras":["c1","c2"],"veredicto":"Lo compraría / Prueba en decant primero","precio":"~$XX USD / ~$XXXk COP","vendor":"Vendor Colombia","imagen_query":"nombre perfume official bottle"}]</RECS>
+Responde SIEMPRE en español. Cálido y directo.`;
 }
+
 
 async function callAPI(messages,system){
   const r=await fetch('/api/chat',{
