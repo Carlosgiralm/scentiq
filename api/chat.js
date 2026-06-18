@@ -105,11 +105,65 @@ REGLAS:
 14. MEMORIA: solo afirma que el usuario "dijo" o "le gusta" algo si está explícitamente en su mensaje actual o en la memoria de perfil guardada. Si no estás seguro de un gusto previo, pregunta en lugar de asumir.
 `;
 
+// ══ SCORING ENGINE ══
+import { getTopMatches } from './scoring.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Solo POST' });
 
-  const { messages, system, fingerprint, userData } = req.body;
+  const { messages, system, fingerprint, userData, scoringContext } = req.body;
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'Invalid' });
+
+  // ── SCORING MATEMÁTICO (cuando viene del flujo "Encontrar mi perfume") ──
+  // Si el frontend envía scoringContext, calculamos el match aquí con fórmula fija.
+  // La IA NO elige los perfumes ni inventa el porcentaje — solo explica los resultados.
+  if (scoringContext) {
+    try {
+      const topMatches = getTopMatches(scoringContext, 3);
+      // Convertir scores a porcentajes legibles y armar el contexto para la IA
+      const matchesParaIA = topMatches.map(p => ({
+        nombre: p.nombre,
+        casa: p.casa,
+        score: p.score,
+        pct: `${p.score}%`,
+        notas: p.notas_simples,
+        precio: `~$${Math.round(p.precio_aprox_cop/1000)}k COP`,
+        vendor: p.vendor,
+        polarizante: p.polarizante,
+        alt_de: p.alt_de,
+      }));
+
+      // Armar el prompt para que la IA SOLO explique — no elija
+      const explainMessages = [{
+        role: 'user',
+        content: `Ya calculé matemáticamente los 3 perfumes que mejor hacen match con este usuario. Tu trabajo es SOLO explicar cada uno en lenguaje cálido y personal — NO cambies el orden, NO cambies los porcentajes, NO recomiendes otros.
+
+USUARIO: género=${scoringContext.genero}, ocasión=${(scoringContext.ocasiones||[]).join('+')}, presupuesto=${scoringContext.presupuesto}, gustos olfativos=${(scoringContext.tinderLikes||[]).join('+')}, temperatura actual=${scoringContext.tempC}°C, expectativa="${scoringContext.expectativa||''}"
+
+RESULTADOS CALCULADOS:
+${matchesParaIA.map((m,i) => `${i+1}. ${m.nombre} (${m.casa}) — Match: ${m.pct} — ${m.notas} — ${m.precio} — ${m.vendor}${m.alt_de ? ` — alternativa a: ${m.alt_de}` : ''}${m.polarizante ? ' — POLARIZANTE: recomendar decant primero' : ''}`).join('\n')}
+
+Responde usando este formato exacto, sin agregar ni quitar perfumes:
+<RECS>[{"nombre":"${matchesParaIA[0]?.nombre}","casa":"${matchesParaIA[0]?.casa}","match":"${matchesParaIA[0]?.pct}","notas":"${matchesParaIA[0]?.notas}","por_que":"[explica en 2 frases por qué encaja con este usuario específico]","cuando":"[cuándo usarlo]","pros":["[pro1]","[pro2]","[pro3]"],"contras":["[con1]","[con2]"],"veredicto":"[Lo compraría / Prueba en decant primero]","precio":"${matchesParaIA[0]?.precio}","vendor":"${matchesParaIA[0]?.vendor}","imagen_query":"${matchesParaIA[0]?.nombre} ${matchesParaIA[0]?.casa} perfume bottle"}${matchesParaIA.slice(1).map(m => `,{"nombre":"${m.nombre}","casa":"${m.casa}","match":"${m.pct}","notas":"${m.notas}","por_que":"[explica por qué encaja]","cuando":"[cuándo usarlo]","pros":["[pro1]","[pro2]"],"contras":["[con1]"],"veredicto":"[veredicto]","precio":"${m.precio}","vendor":"${m.vendor}","imagen_query":"${m.nombre} ${m.casa} perfume bottle"}`).join('')}]</RECS>`
+      }];
+
+      const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+      const explainSystem = `Eres ScentIQ. Los perfumes ya fueron elegidos matemáticamente. Solo explica cada uno en español, cálido y sin tecnicismos. NUNCA cambies el orden ni los porcentajes. NUNCA recomiendes perfumes diferentes a los indicados.`;
+
+      const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1500, system: explainSystem, messages: explainMessages })
+      });
+
+      const claudeData = await claudeRes.json();
+      const reply = claudeData.content?.map(b => b.text || '').join('') || '';
+      return res.status(200).json({ reply, scoredMatches: matchesParaIA });
+    } catch (err) {
+      console.error('Scoring error:', err);
+      // Si falla el scoring, continúa con flujo normal
+    }
+  }
 
   const SUPABASE_URL = 'https://zdftewqlzulsjbfvpklt.supabase.co';
   const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
