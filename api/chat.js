@@ -101,6 +101,8 @@ REGLAS:
 10. Perfume arriesgado/polarizante→recomendar decant primero
 11. El usuario es más importante que el perfume — recomendar lo que encaja, no lo más famoso
 12. Si no conoces algo con certeza, dilo
+13. DIVERSIFICACIÓN OBLIGATORIA: Rasasi Hawas (y su familia Fire/Black/Tropical/Kobra/Malibu) es solo UNA opción entre cientos. NO la recomiendes por defecto ni la uses como respuesta genérica. Solo recomiéndala si el perfil del usuario (presupuesto, género, ocasión, gustos expresados) realmente apunta a un fougère acuático/aromático masculino accesible. Para cada consulta nueva, considera primero TODA la base de marcas relevantes a ese presupuesto y ocasión antes de elegir, y varía las recomendaciones entre usuarios con perfiles similares — no caigas en dar siempre el mismo perfume "seguro".
+14. MEMORIA: solo afirma que el usuario "dijo" o "le gusta" algo si está explícitamente en su mensaje actual o en la memoria de perfil guardada. Si no estás seguro de un gusto previo, pregunta en lugar de asumir.
 `;
 
 export default async function handler(req, res) {
@@ -145,7 +147,7 @@ export default async function handler(req, res) {
     let memCtx = '';
     if (userProfile?.profile && Object.keys(userProfile.profile).length > 0) {
       const p = userProfile.profile;
-      memCtx = `\nMEMORIA USUARIO (${userProfile.visit_count} visitas): ${p.nombre ? `Nombre: ${p.nombre}.` : ''} ${p.genero ? `Género: ${p.genero}.` : ''} ${p.ciudad ? `Ciudad: ${p.ciudad}.` : ''} ${p.edad ? `Edad: ${p.edad}.` : ''} ${p.presupuesto ? `Presupuesto: ${p.presupuesto}.` : ''} ${p.familias_favoritas ? `Gustos: ${p.familias_favoritas}.` : ''} ${p.perfumes_tiene ? `Tiene: ${p.perfumes_tiene}.` : ''} Salúdalo si lo conoces. No repitas preguntas.`;
+      memCtx = `\nMEMORIA GUARDADA DE ESTE USUARIO (${userProfile.visit_count} visitas) — esto es lo único que sabes con certeza de visitas anteriores, no asumas nada más allá de esto: ${p.nombre ? `Nombre: ${p.nombre}.` : ''} ${p.genero ? `Género: ${p.genero}.` : ''} ${p.ciudad ? `Ciudad: ${p.ciudad}.` : ''} ${p.edad ? `Edad: ${p.edad}.` : ''} ${p.presupuesto ? `Presupuesto: ${p.presupuesto}.` : ''} ${p.familias_favoritas ? `Gustos registrados: ${p.familias_favoritas}.` : ''} ${p.perfumes_tiene ? `Perfumes que mencionó tener: ${p.perfumes_tiene}.` : ''} Puedes saludarlo si tienes su nombre y no repitas preguntas ya respondidas. NUNCA digas "me dijiste que te gusta X" si X no aparece literalmente aquí arriba.`;
     }
 
     const fullSystem = `Eres ScentIQ, el mejor asesor de perfumería de Colombia. Eres cálido, directo y hablas como un amigo experto — no como un catálogo.
@@ -184,19 +186,49 @@ SIEMPRE en español. Honesto. Cálido. Máximo 3 recomendaciones.`;
     const reply = claudeData.content?.map(b => b.text || '').join('') || '';
 
     // ── UPDATE PROFILE ──
+    // CRÍTICO: solo leer mensajes role==='user', NUNCA los del bot.
+    // Bug anterior: leía toda la conversación incluyendo las respuestas del
+    // asesor, así que si el bot mencionaba "Lattafa" o "árabe" al recomendar,
+    // el sistema lo guardaba como un gusto que el USUARIO había expresado,
+    // sin que el usuario hubiera dicho nada. Esto generaba memoria falsa.
     if (fingerprint && userProfile) {
-      const allText = messages.map(m =>
-        typeof m.content === 'string' ? m.content : JSON.stringify(m.content)
-      ).join(' ').toLowerCase();
+      const userOnlyText = messages
+        .filter(m => m.role === 'user')
+        .map(m => typeof m.content === 'string' ? m.content : JSON.stringify(m.content))
+        .join(' ')
+        .toLowerCase();
+
       const profileUpdate = { ...((userProfile.profile) || {}) };
-      if (allText.match(/\bsoy hombre\b|\bhombre\b/)) profileUpdate.genero = 'Hombre';
-      else if (allText.match(/\bsoy mujer\b|\bmujer\b/)) profileUpdate.genero = 'Mujer';
+
+      if (userOnlyText.match(/\bsoy hombre\b|\bhombre\b/)) profileUpdate.genero = 'Hombre';
+      else if (userOnlyText.match(/\bsoy mujer\b|\bmujer\b/)) profileUpdate.genero = 'Mujer';
+
       ['bogotá','bogota','medellín','medellin','cali','barranquilla','cartagena','santa marta','bucaramanga','pereira','manizales','ibagué'].forEach(c => {
-        if (allText.includes(c)) profileUpdate.ciudad = c.charAt(0).toUpperCase() + c.slice(1);
+        if (userOnlyText.includes(c)) profileUpdate.ciudad = c.charAt(0).toUpperCase() + c.slice(1);
       });
-      if (allText.includes('lattafa') || allText.includes('árabe') || allText.includes('oud') || allText.includes('rasasi') || allText.includes('jo milano')) {
-        profileUpdate.familias_favoritas = (profileUpdate.familias_favoritas ? profileUpdate.familias_favoritas + ', ' : '') + 'Oriental/Árabe';
+
+      // Gustos: solo se registran si el USUARIO explícitamente dice que le
+      // gusta/usa/tiene algo árabe/oud, no solo porque la palabra aparece.
+      if (userOnlyText.match(/(me gusta|uso|tengo|me encanta|prefiero|busco)[^.]{0,40}(lattafa|árabe|arabe|oud|rasasi|jo milano|armaf)/)) {
+        const existing = (profileUpdate.familias_favoritas || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (!existing.includes('Oriental/Árabe')) existing.push('Oriental/Árabe');
+        profileUpdate.familias_favoritas = existing.join(', ');
       }
+
+      // Extracción de perfumes específicos que el usuario dice tener/usar/le gustan
+      const perfumeMatches = [...userOnlyText.matchAll(/(?:tengo|uso|me gusta|tengo el|tengo la|compré|compre)\s+(?:el |la |un |una )?([a-záéíóúñ0-9 ]{3,30}?)(?:\.|,|$| y | pero | que )/g)];
+      if (perfumeMatches.length > 0) {
+        const existing = (profileUpdate.perfumes_tiene || '').split(',').map(s => s.trim()).filter(Boolean);
+        perfumeMatches.forEach(m => {
+          const candidate = m[1].trim();
+          // Filtrar capturas demasiado genéricas o cortas para evitar ruido
+          if (candidate.length >= 3 && !existing.some(e => e.toLowerCase() === candidate.toLowerCase())) {
+            existing.push(candidate);
+          }
+        });
+        if (existing.length > 0) profileUpdate.perfumes_tiene = existing.slice(0, 15).join(', ');
+      }
+
       fetch(`${SUPABASE_URL}/rest/v1/users?fingerprint=eq.${fingerprint}`, {
         method: 'PATCH',
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
