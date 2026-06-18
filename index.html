@@ -1066,26 +1066,48 @@ async function generateRecommendations(){
   const rc=document.getElementById('results-content');
   rc.innerHTML=`<div style="text-align:center;padding:3rem 1rem">
     <div style="font-size:48px;margin-bottom:1rem">✨</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);margin-bottom:.5rem">Analizando tu perfil</div>
-    <div style="font-size:13px;color:var(--text2)">Buscando los perfumes que mejor encajan contigo...</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);margin-bottom:.5rem">Calculando tu match</div>
+    <div style="font-size:13px;color:var(--text2)">Comparando más de 70 perfumes con tu perfil...</div>
   </div>`;
 
-  let prompt='';
+  // ── FLUJO "ENCONTRAR MI PERFUME" → SCORING MATEMÁTICO ──
   if(flowType==='find'){
-    const exp=flowData.exp;
-    const ocasion=Array.isArray(flowData.ocasion)?flowData.ocasion.join(', '):flowData.ocasion||'uso general';
-    const presupuesto=flowData.presupuesto||'medio';
-    const tastes=flowData.tastes?`Gustos detectados: ${flowData.tastes.join(', ')}.`:'';
-    prompt=`El usuario quiere encontrar su perfume ideal. Experiencia: ${exp}. Ocasión: ${ocasion}. Presupuesto: ${presupuesto}. ${tastes} Clima actual: ${weatherCtx}. Dame máximo 3 recomendaciones con el formato JSON.`;
-  } else if(flowType==='today'){
+    const scoringContext={
+      genero: flowData.genero==='hombre'?'hombre':flowData.genero==='mujer'?'mujer':'unisex',
+      ocasiones: Array.isArray(flowData.ocasion)?flowData.ocasion:[flowData.ocasion||'versatil'],
+      presupuesto: flowData.presupuesto||'medio',
+      tinderLikes: flowData.tinderLikes||[],
+      tempC: weatherTemp||20,
+      expectativa: flowData.expectativa||'',
+      nivelUsuario: flowData.exp==='no'?'nuevo':(userMemory?.visit_count>10?'entusiasta':userMemory?.visit_count>3?'explorador':'nuevo'),
+    };
+    try{
+      const r=await fetch('/api/chat',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messages:[{role:'user',content:'Dame los resultados de mi perfil olfativo'}],scoringContext,fingerprint:FP,userData:userProfile})
+      });
+      const d=await r.json();
+      if(d.userProfile)userMemory={...userMemory,...d.userProfile};
+      await renderResults(rc,d.reply||'');
+      return;
+    }catch(e){
+      console.error('Scoring error:',e);
+    }
+  }
+
+  // ── OTROS FLUJOS → IA normal ──
+  let prompt='';
+  if(flowType==='today'){
     const plan=flowData.plan||'casual';
-    prompt=`El usuario quiere saber qué perfume usar HOY. Plan: ${plan}. Clima actual: ${weatherCtx}. Momento del día: ${weatherMomento}. Dame 1-2 recomendaciones directas y concretas para este momento específico.`;
+    prompt=`El usuario quiere saber qué perfume usar HOY. Plan: ${plan}. Clima actual: ${weatherCtx}. Momento del día: ${weatherMomento}. Dame 1-2 recomendaciones directas con el formato JSON.`;
   } else if(flowType==='compare'){
-    prompt=`Compara estos dos perfumes para este usuario: "${flowData.perfA}" vs "${flowData.perfB}". Clima: ${weatherCtx}. Explica las diferencias en lenguaje simple, cuándo usar cada uno y cuál encaja mejor para este usuario según el clima y contexto actual. NO declares un ganador absoluto.`;
+    prompt=`Compara estos dos perfumes: "${flowData.perfA}" vs "${flowData.perfB}". Clima: ${weatherCtx}. Explica diferencias en lenguaje simple y cuál encaja mejor. NO declares ganador absoluto.`;
   } else if(flowType==='gift'){
     const genero=flowData.generoRegalo||'cualquiera';
     const presupuesto=flowData.presupuesto||'medio';
-    prompt=`El usuario busca un regalo de perfume para: ${genero}. Presupuesto: ${presupuesto}. Clima: ${weatherCtx}. Dame 2-3 opciones seguras y bien recibidas con el formato JSON.`;
+    prompt=`El usuario busca regalo de perfume para: ${genero}. Presupuesto: ${presupuesto}. Clima: ${weatherCtx}. Dame 2-3 opciones seguras con el formato JSON.`;
+  } else if(flowType==='beginner'){
+    prompt=`El usuario está empezando en perfumería. Motivo: ${flowData.motivo||'oler bien'}. Clima: ${weatherCtx}. Recomienda 2-3 perfumes accesibles y versátiles para empezar.`;
   }
 
   try{
