@@ -358,4 +358,4 @@ function getTopMatches(ctx, n = 3) {
   return top.slice(0, n);
 }
 
-module.exports = { getTopMatches, calcularScore, PERFUMES };
+export { getTopMatches, calcularScore, PERFUMES };
